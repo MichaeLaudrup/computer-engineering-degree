@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.target=Tecnico
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Tecnico\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=dni\ nombre\ apellido\ domicilio\ telefono
+comment1.target=Tecnico(java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String)
+comment2.params=identificador
+comment2.target=void\ eliminarReparacion(java.lang.String)
+comment3.params=identificador
+comment3.target=boolean\ existeReparacion(java.lang.String)
+comment4.params=descripcion\ cliente\ tecni\ producto\ recepcion\ garantia
+comment4.target=void\ addFichaReparacion(java.lang.String,\ Cliente,\ Tecnico,\ Electrodomestico,\ java.util.Date,\ boolean)
+comment5.params=
+comment5.target=void\ printReparaciones()
+comment6.params=key
+comment6.target=FichaReparacion\ getFicha(java.lang.String)
+numComments=7

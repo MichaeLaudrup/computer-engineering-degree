@@ -1,0 +1,18 @@
+
+<div class="input__component" [formGroup]="formGroupFromParent">
+    <input [id]="inputId"
+        class="input__control"
+        type="text"
+        (focusout)="checkInput()"
+        [formControlName]="controlName"
+        #input>
+    <label 
+        class="input__label"
+        [ngClass]="{'label-elevated': labelElevated}"
+        [for]="inputId"
+         >
+        {{ labelText }}
+    </label>
+    <div class="line" [ngClass]="{'line-desplazed': labelElevated}">  
+    </div>
+</div>

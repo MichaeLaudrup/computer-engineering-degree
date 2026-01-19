@@ -1,0 +1,80 @@
+:host {
+    display: block;
+    padding-top: 1rem;
+    width: 100%;
+    border-radius: var(--global-border-radius);
+    overflow: hidden; 
+}
+
+.input__component {
+    width: 100%;
+    position: relative;
+}
+
+.input__label {
+    font-size: var(--font-size-normal);
+    display: block;
+    color: var(--text-generic-color); 
+    position: absolute;
+    top: 50%; 
+    transform: translateY(-50%);
+    left: 0;
+    transition: all .5s ease-in-out;
+}
+
+.input__control {
+    transition: all .5s ease-in-out;
+    position: relative;
+    font-family: inherit;
+    font-size: var(--font-size-normal);
+    width: 100%;
+    background-color: transparent;
+    border: none; 
+    border-bottom: 2px solid var(--text-generic-color);
+    padding: .75rem .25rem .25rem .25rem; 
+    color: var(--text-generic-color); 
+    &:focus, &:hover {
+        outline: none;
+        color: var(--c3) !important; 
+        & + .input__label {
+            top: 0%;
+            font-size:  var(--font-size-normal);
+            transform: translateY(-80%);
+            color: var(--c3) !important; 
+            @media screen and (min-width: 576px) {
+                font-size: 0.75rem;
+            }
+        }
+
+        & ~ .line{
+            left: 0%; 
+        }
+    }
+}
+
+.label-elevated {
+    top: 0%; 
+    font-size: 1rem; 
+    transform: translateY(-70%);
+    color: var(--text-generic-color) !important; 
+}
+
+.line{
+    transition: all .7s ease-in-out;
+    position: absolute; 
+    width: 100%;
+    left: -100%;
+    top: 100; 
+    bottom:0; 
+    height: 3px;
+    background-color: var(--c3);
+}
+
+@media screen and (min-width: 600px) {
+    .input__label {
+        font-size: var(--font-size-small) !important;
+    }
+    .label-elevated {
+        font-size: var(--font-size-small) !important; 
+    }
+}

@@ -1,0 +1,85 @@
+MOVE #0,/65535				;Quadruple - [INICIAR_DATOS_GLOBALES A1, 0, null]
+
+MOVE #0,/65534				;Quadruple - [INICIAR_DATOS_GLOBALES RESTA, 0, null]
+
+MOVE #0,/65533				;Quadruple - [INICIAR_DATOS_GLOBALES B1, 0, null]
+
+MOVE #10,/65532				;Quadruple - [MV T_0, 10, null]
+
+MOVE #65535,/65531				;Quadruple - [MVA T_1, A1, null]
+
+MOVE /65531,.R1
+MOVE /65532,[.R1]				;Quadruple - [STP T_1, T_0, null]
+
+MOVE #5,/65530				;Quadruple - [MV T_2, 5, null]
+
+MOVE #65533,/65529				;Quadruple - [MVA T_3, B1, null]
+
+MOVE /65529,.R1
+MOVE /65530,[.R1]				;Quadruple - [STP T_3, T_2, null]
+
+MOVE #65535,/65527				;Quadruple - [MVA T_5, A1, null]
+
+MOVE /65527, .R1
+MOVE [.R1],/65528				;Quadruple - [MVP T_4, T_5, null]
+
+MOVE #65533,/65525				;Quadruple - [MVA T_7, B1, null]
+
+MOVE /65525, .R1
+MOVE [.R1],/65526				;Quadruple - [MVP T_6, T_7, null]
+
+CMP /65528, /65526
+BN /L_5
+MOVE #1,/65524
+BR /L_6
+L_5:MOVE #0,/65524
+L_6:				;Quadruple - [GR T_8, T_4, T_6]
+
+CMP #0,/65524
+BZ /L_1				;Quadruple - [BRF T_8, L_1, null]
+
+MOVE #65535,/65522				;Quadruple - [MVA T_10, A1, null]
+
+MOVE /65522, .R1
+MOVE [.R1],/65523				;Quadruple - [MVP T_9, T_10, null]
+
+MOVE #65533,/65520				;Quadruple - [MVA T_12, B1, null]
+
+MOVE /65520, .R1
+MOVE [.R1],/65521				;Quadruple - [MVP T_11, T_12, null]
+
+SUB /65523,/65521
+MOVE .A,/65519				;Quadruple - [SUB T_13, T_9, T_11]
+
+MOVE #65534,/65518				;Quadruple - [MVA T_14, RESTA, null]
+
+MOVE /65518,.R1
+MOVE /65519,[.R1]				;Quadruple - [STP T_14, T_13, null]
+
+BR /L_0				;Quadruple - [BR L_0, null, null]
+
+L_1:				;Quadruple - [INL L_1, null, null]
+
+MOVE #20,/65517				;Quadruple - [MV T_15, 20, null]
+
+MOVE #65534,/65516				;Quadruple - [MVA T_16, RESTA, null]
+
+MOVE /65516,.R1
+MOVE /65517,[.R1]				;Quadruple - [STP T_16, T_15, null]
+
+L_0:				;Quadruple - [INL L_0, null, null]
+
+WRSTR /L_2
+WRCHAR #10				;Quadruple - [ESCRIBE_TEXTO L_2, null, null]
+
+MOVE #65534,/65514				;Quadruple - [MVA T_18, RESTA, null]
+
+MOVE /65514, .R1
+MOVE [.R1],/65515				;Quadruple - [MVP T_17, T_18, null]
+
+WRINT /65515				;Quadruple - [ESCRIBIR_ENTERO T_17, null, null]
+
+HALT				;Quadruple - [HALT null, null, null]
+
+L_2:DATA "RESTA (5):"				;Quadruple - [ETIQUETA RESTA (5):, L_2, null]
+

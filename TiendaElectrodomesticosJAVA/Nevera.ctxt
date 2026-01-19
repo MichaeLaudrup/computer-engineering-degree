@@ -1,0 +1,18 @@
+#BlueJ class context
+comment0.target=Nevera
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Nevera\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=elementosBasicos\ eficiencia\ t_min\ nCajones
+comment1.target=Nevera(java.lang.String[],\ java.lang.String,\ double,\ int)
+comment2.params=identificador\ marca\ modelo\ color\ precio\ cantidad\ eficiencia\ t_min\ nCajones
+comment2.target=Nevera(java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ double,\ int,\ java.lang.String,\ double,\ int)
+comment3.params=
+comment3.target=double\ getT_min()
+comment4.params=t_min
+comment4.target=void\ setT_min(double)
+comment5.params=
+comment5.target=int\ getnCajones()
+comment6.params=nCajones
+comment6.target=void\ setnCajones(int)
+comment7.params=
+comment7.target=java.lang.String\ toString()
+numComments=8

@@ -1,0 +1,11 @@
+#BlueJ class context
+comment0.target=Gestor
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Gestor\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=
+comment1.target=Gestor()
+comment2.params=
+comment2.target=java.util.HashMap\ getMapa()
+comment3.params=key
+comment3.target=java.lang.Object\ getElemento(java.lang.String)
+comment3.text=\r\n\ M\u00E9todo\ que\ devuelve\ un\ tipo\ T\ seg\u00FAn\ la\ llave\r\n\ de\ formato\ String\ recibida\r\n\ @param\ llave\ del\ mapa(String)\ \r\n
+numComments=4

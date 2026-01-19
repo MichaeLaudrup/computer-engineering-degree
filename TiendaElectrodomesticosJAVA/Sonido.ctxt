@@ -1,0 +1,18 @@
+#BlueJ class context
+comment0.target=Sonido
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Sonido\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=elementosBasicos\ elementosSonido
+comment1.target=Sonido(java.lang.String[],\ java.lang.String[])
+comment2.params=identificador\ marca\ modelo\ color\ precio\ stock\ tipoBateria\ tipoConector
+comment2.target=Sonido(java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ double,\ int,\ java.lang.String,\ java.lang.String)
+comment3.params=
+comment3.target=java.lang.String\ getTipoBateria()
+comment4.params=tipoBateria
+comment4.target=void\ setTipoBateria(java.lang.String)
+comment5.params=
+comment5.target=java.lang.String\ getTipoConector()
+comment6.params=tipoConector
+comment6.target=void\ setTipoConector(java.lang.String)
+comment7.params=
+comment7.target=java.lang.String\ toString()
+numComments=8

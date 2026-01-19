@@ -1,0 +1,18 @@
+#BlueJ class context
+comment0.target=Periferico
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Impresora\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=elementosBasicos\ elementosInformatica\ periferico\ velocidad
+comment1.target=Periferico(java.lang.String[],\ java.lang.String[],\ java.lang.String,\ double)
+comment2.params=identificador\ marca\ modelo\ color\ precio\ stock\ almacenamiento\ nEntradas\ periferico\ velocidad
+comment2.target=Periferico(java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ double,\ int,\ double,\ int,\ java.lang.String,\ double)
+comment3.params=
+comment3.target=java.lang.String\ getPeriferico()
+comment4.params=
+comment4.target=double\ getVelocidad()
+comment5.params=periferico
+comment5.target=void\ setPeriferico(java.lang.String)
+comment6.params=velocidad
+comment6.target=void\ setVelocidad(double)
+comment7.params=
+comment7.target=java.lang.String\ toString()
+numComments=8

@@ -1,0 +1,23 @@
+#BlueJ class context
+comment0.target=Imagen
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Imagen\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=elementosBasicos\ elementosImagen
+comment1.target=Imagen(java.lang.String[],\ java.lang.String[])
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Imagen\r\n
+comment2.params=identificador\ marca\ modelo\ color\ precio\ stock\ pulgadas\ resolucion\ frecuencia
+comment2.target=Imagen(java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ double,\ int,\ int,\ java.lang.String,\ int)
+comment3.params=
+comment3.target=int\ getPulgadas()
+comment4.params=pulgadas
+comment4.target=void\ setPulgadas(int)
+comment5.params=
+comment5.target=java.lang.String\ getResolucion()
+comment6.params=resolucion
+comment6.target=void\ setResolucion(java.lang.String)
+comment7.params=
+comment7.target=int\ getfrecuencia()
+comment8.params=frecuencia
+comment8.target=void\ setFrecuencia(int)
+comment9.params=
+comment9.target=java.lang.String\ toString()
+numComments=10

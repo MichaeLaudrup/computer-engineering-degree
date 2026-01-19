@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.target=Empleado
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Empleado\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=dni\ nombre\ apellido\ domicilio\ telefono\ tipoEmpleado
+comment1.target=Empleado(java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String)
+comment1.text=\r\n\ Creacion\ de\ un\ empleado\r\n\ @param\ dni\ del\ empleado\r\n\ @param\ nombre\ del\ empleado\r\n\ @param\ nivel\ de\ privilegio\r\n
+comment2.params=
+comment2.target=java.lang.String\ getTipoEmpleado()
+comment2.text=\r\n\ M\u00E9todo\ que\ devuelve\ nivel\ de\ privilegios\ del\ empleado\r\n\ en\ el\ sistema.\r\n\ @return\ nivel\ de\ privilegios\r\n
+comment3.params=
+comment3.target=java.lang.String\ toString()
+numComments=4

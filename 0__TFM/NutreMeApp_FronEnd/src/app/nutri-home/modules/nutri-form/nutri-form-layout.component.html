@@ -1,0 +1,16 @@
+<div class="carrousel" [@carrouselAnimation]="currentRoute" [style.height.px]="height - ((isInMobileMood) ? 50 : 0)" >
+    <div class="progress-bar-container">
+        <progress-bar [maxValue]="100" [progressValue]="progressValue"></progress-bar>
+    </div>
+    <div class="arrow left-arrow" (click)="previousPage()" [ngClass]="{disabled: actualPage === 0}">
+        <span class="material-icons-outlined"  >
+            arrow_back
+        </span>
+    </div>
+    <router-outlet #outlet="outlet" (activate)="processOutlet($event, outlet)"></router-outlet>
+    <div class="arrow right-arrow" (click)="nextPage()" [ngClass]="{disabled: actualPage >= (routes.length -1)}">
+        <span class="material-icons-outlined">
+            arrow_forward
+        </span>
+    </div>
+</div>

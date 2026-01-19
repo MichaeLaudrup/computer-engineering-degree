@@ -1,0 +1,32 @@
+
+
+<div class="container">
+    <div class="search-container" (click)="clickInside = true">
+        <search-input (updatedInput)="searchMealsWithQuery($event)"></search-input>
+        <div class="container" *ngIf="!hideResults">
+            <ul class="search-results">
+                <ng-container *ngFor="let meal of meals; let i = index">
+                    <li 
+                        class="search-result-item"
+                        (click)="addToMealsSelected(meal)"
+                        [ngClass]="{'meal-selected':  mealsSelectedIds.includes(meal._id) }"
+                        >
+                        {{meal.name}}
+                        <span class="material-icons-outlined">{{ mealsSelectedIds.includes(meal._id) ? 'remove_circle_outline': 'add'}}</span>
+                    </li>
+                </ng-container>
+            </ul>
+        </div>
+    </div>
+    
+    <h3>Alimentos seleccionados: </h3>
+    <ul class="list-meals" [style.maxHeight.px]="maxHeight" >
+        <ng-container *ngFor="let mealSelected of mealsSelected; let i = index">
+            <list-meal-item [ngClass]="{'selected': actualItemSelected === i}"[meal]="mealSelected"[index]="i" (listItemClicked)="actualItemSelected = $event"></list-meal-item>
+        </ng-container>
+    </ul>
+</div>
+
+<button class="btn" (click)="sendUpSelectedMeals()">
+    Continuar
+</button>

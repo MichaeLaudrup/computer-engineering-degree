@@ -1,0 +1,57 @@
+MODULE pruebasB; 
+	CONST 
+		cte1 = 4; 
+		cte2 = true; 
+		cte3 = false;
+		liminf = 1; 
+		limsup = 9;
+	TYPE
+		Vector = ARRAY[liminf..9] OF INTEGER; 
+		Vector2 = ARRAY[1..limsup] OF BOOLEAN; 
+		Vector3 = ARRAY[1..9] OF INTEGER; 
+		Vector4 = ARRAY[liminf..limsup] OF BOOLEAN; 
+		(*VectorMalHecho = ARRAY[limsup..liminf] OF INTEGER; ERROR POR MAL INDEXADO *)
+	VAR 
+		x,y,z: integer; 
+		a:boolean; 
+		b:boolean; 
+		c:boolean; 
+		(*x:vector DEBERIA GENERAR ERROR POR DUPLICACION NOMBRE*)
+		vEnteros: vector; 
+		vLogico: vector2; 
+	PROCEDURE funcion(i,j,k:integer);
+	BEGIN 
+	END funcion; 
+	
+BEGIN
+		a := true; 
+		writeINt(cte1); 
+		b := false; 
+		if(b OR false) then
+			writeString("hay un fallo en tu OR o en tu asignacion de un valor booleano a una variable simple"); 
+		else 
+			writeString("IF CORRECTO");
+			if(3 = 4) then
+				writeString("Sentencia igualdad mal"); 
+			else
+				if( (3 > 1) = true) then
+					writeString("Anidamiento de IF-ELSE y sentencias de mayor, OR, igualdad correcto "); 
+				end; 
+			end; 
+		end;
+		y:= 30; 
+		c:= true;
+		if (a OR true) then
+			for x:= 1 to y do
+				if(c) then
+					writeString("inpar");
+					c := false;  
+					writeint(x);
+				else
+					writeString("par"); 
+					c := true; 
+					writeint(x); 
+				end;
+			end;  
+		end; 	
+END pruebasB; 

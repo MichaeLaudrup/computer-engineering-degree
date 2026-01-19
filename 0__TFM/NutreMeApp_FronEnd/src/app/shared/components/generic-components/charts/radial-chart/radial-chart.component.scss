@@ -1,0 +1,44 @@
+:host{
+    position:relative; 
+    display: block;
+}
+.radial-chart__container {
+    position: relative; 
+    width: 100%;
+}
+
+.outer-circle, .outer-circle-fill {
+    transition: all .7s ease-in-out;
+    width: 100%;  
+    height: 100%;
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    border-radius: 50%;
+}
+
+.inner-circle {
+    width: 90%;
+    height: 90%;
+    position: absolute;
+    top: calc( 50% ); 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background-color: var(--elements-bg-secondary); 
+}
+
+.data {
+    position: absolute;
+    top: 50%; 
+    left: 50%; 
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+.label{
+    font-size:.6rem; 
+    
+}
+
+

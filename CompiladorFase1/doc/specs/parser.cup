@@ -1,0 +1,347 @@
+package compiler.syntax;
+
+// Declaración de importaciones 
+//(No modificar las proporcionadas. Se pueden agregar mas)
+
+import java_cup.runtime.Symbol;
+import java.util.*;
+
+import es.uned.lsi.compiler.lexical.*;
+import es.uned.lsi.compiler.code.*;
+import es.uned.lsi.compiler.intermediate.*;
+import es.uned.lsi.compiler.semantic.*;
+import es.uned.lsi.compiler.semantic.symbol.*;
+import es.uned.lsi.compiler.semantic.type.*;
+import es.uned.lsi.compiler.syntax.*;
+
+import compiler.CompilerContext;
+import compiler.lexical.*;
+import compiler.syntax.nonTerminal.*;
+import compiler.semantic.*;
+import compiler.semantic.symbol.*;
+import compiler.semantic.type.*;
+import compiler.intermediate.*;
+import compiler.code.*;
+
+// Declaración del código de usuario
+
+action code {:
+	
+	SyntaxErrorManager   syntaxErrorManager   = CompilerContext.getSyntaxErrorManager();
+	SemanticErrorManager semanticErrorManager = CompilerContext.getSemanticErrorManager ();
+	ScopeManagerIF       scopeManager         = CompilerContext.getScopeManager ();
+	FinalCodeFactoryIF   finalCodeFactory     = CompilerContext.getFinalCodeFactory ();
+
+	public String informa(int id_error){
+	    switch(id_error){
+	    	case 0: 
+	    		return "Te ha faltado poner la clausula final de un programa principal(fin.)"; 
+	        case 1: 
+	            return "Faltan dos puntos verticales en la cabecera del programa principal"; 
+	         case 2: 
+	         	return "no se debe intruducir cierto o falso en un sentencia escribir"; 
+	         case 3: 
+	         	return "Te ha faltado poner punto y coma en la seccion declarativa de CONSTANTES, concretamente, en la linea "; 
+	         case 4: 
+	          	return "Te ha faltado poner punto y coma en la seccion declarativa de VARIABLES, en alguna de sus sentencias ";
+	        default: 
+	        	return "error desconocido"; 
+	    
+	    }
+	}
+	
+:}	
+
+parser code {:
+	
+	SyntaxErrorManager syntaxErrorManager = CompilerContext.getSyntaxErrorManager();
+	public void syntax_error(Symbol symbol)
+	{ 
+	    Token token = (Token) symbol.value;
+	    syntaxErrorManager.syntaxError ("Error sintactico", token);	    
+	}
+		
+	public void unrecovered_syntax_error(java_cup.runtime.Symbol symbol)
+	{	
+	    Token token = (Token) symbol.value;
+	    syntaxErrorManager.syntaxFatalError ("Error fatal", token);
+	}
+:}
+
+//-------------> Declaración de terminales
+
+terminal Token BOOLEANO;
+terminal Token CIERTO;
+terminal Token COMIENZO;
+terminal Token CONSTANTES;
+terminal Token DE;
+terminal Token EN;
+terminal Token DEVOLVER;
+terminal Token ENTERO;
+terminal Token ENTONCES;
+terminal Token ESCRIBIR;
+terminal Token FALSO;
+terminal Token FIN;
+terminal Token FUNCION;
+terminal Token PARA;
+terminal Token PROCEDIMIENTO;
+terminal Token PROGRAMA;
+terminal Token SI;
+terminal Token NO; 
+terminal Token SINO;
+terminal Token SUBPROGRAMAS;
+terminal Token TIPOS;
+terminal Token VAR;
+terminal Token VARIABLES;
+terminal Token VECTOR;
+terminal Token YLOGICO;
+terminal Token PARENIZQ;
+terminal Token PARENDER;
+terminal Token CORCHEIZQ;
+terminal Token CORCHEDER;
+terminal Token COMA;
+terminal Token PUNTOCOMA;
+terminal Token DOSPUNTOSVERTICALES;
+terminal Token DOSPUNTOSHORIZONTALES;
+terminal Token SUMA;
+terminal Token PRODUCTO;
+terminal Token MENOR;
+terminal Token IGUAL;
+terminal Token IDENTIFICADOR; 
+terminal Token PUNTO; 
+terminal Token NUMEROENTERO; 
+terminal Token CONDICIONIGUAL; 
+terminal Token FINALCONDICIONAL; 
+terminal Token FINPARA; 
+terminal Token CADENATEXTO; 
+terminal Token COMILLASDOBLE; 
+// ...
+
+
+// Declaración de no terminales
+// no modificar los propuestos
+	
+	// NO TERMINALES RELATIVOS A ESTRUCTURA GLOBAL
+	non terminal  			program;
+	non terminal Axiom		axiom;
+	non terminal            cabecera_programa;
+	non terminal            cuerpo_programa;  
+	non terminal            seccion_declarativa; 
+	non terminal            seccion_instrucciones; 
+	
+	//NO TERMINALES RELATIVOS A CONSTANTES
+	 
+	non terminal            subseccion_ctes;
+	non terminal            declaracion_cte; 
+	non terminal            nueva_cte; 
+	
+	//NO TERMINALES RELATIVOS A TIPOS 
+	
+	non terminal            subseccion_tipos;
+	non terminal            declaracion_tipo; 
+	non terminal            nuevo_tipo; 
+	non terminal            tipo_complejo; 
+	non terminal            tipo_primitivo; 
+	
+	 
+	//NO TERMINALES RELATIVOS A VARIABLES 
+	
+	non terminal            subseccion_var;
+	non terminal            declaracion_var; 
+	non terminal            nueva_lista; 
+	
+	//NO TERMINALES RELATIVOS A SUBPROGRAMAS
+	
+	
+	non terminal            seccion_procedimientos; 
+	non terminal            nuevo_procedimiento; 
+	non terminal            cabecera_procedimiento;
+	non terminal            lista_parametros;  
+	non terminal            seccion_funciones; 
+	non terminal            nueva_funcion; 
+	non terminal            cabecera_funcion; 
+	non terminal            cuerpo_funcion; 
+	non terminal            seccion_instru_funcion;
+	non terminal            bloque_control_devolver; 
+	non terminal            instruccion_devolver;  
+	non terminal            fin_de_subprograma;
+	non terminal            paso_parametro; 
+	non terminal 			subseccion_subprogramas; 
+	
+	
+	// NO TERMINALES REFERENTES A INSTRUCCIONES
+	
+	non terminal            expresion; 
+	non terminal            acceso_vector; 
+	non terminal            llamada_funcion; 
+	non terminal            lista_argumentos; 
+	non terminal            valor_atomico; 
+	
+	
+	non terminal            bloque_instrucciones; 
+	non terminal            nueva_instruccion; 
+	non terminal            instruccion_asignacion; 
+	non terminal            instruccion_condicional; 
+	non terminal            condicion_simple; 
+	non terminal            condicion_doble; 
+	non terminal            instruccion_para; 
+	non terminal            instruccion_salida; 
+	non terminal            parametro_salida; 
+	non terminal            llamada_procedimiento; 
+	
+	
+	// NO TERMINALES GENERICOS (USADOS EN TODA LA GRAMATICA)
+	
+	non terminal            cadena_vacia;
+	non terminal            valor_asignable; 
+	non terminal            tipo_dato; 
+	non terminal            listado_ids; 
+	non terminal            listado_ids_con_tipo; 
+	non terminal            indice_vector; 
+	non terminal            valor_logico; 
+	
+	
+	// ...
+	// Declaración de relaciones de precedencia
+	
+	precedence left     MENOR, CONDICIONIGUAL; 
+	precedence left     SUMA;
+	precedence left     PRODUCTO, YLOGICO;
+	precedence left     NO; 
+	precedence left     PARENIZQ, PARENDER, CORCHEDER, CORCHEIZQ; 
+	
+	// ...
+	
+	// Declaración de reglas de producción
+
+
+start with program;
+
+program ::= 
+  {: 
+        syntaxErrorManager.syntaxInfo ("Starting parsing..."); 
+   :}
+  axiom:ax
+  {: 
+  		// No modificar esta estructura, aunque se pueden añadir más acciones semánticas
+  		// Para la entrega de febrero pueden comentarse las dos sentencias siguientes:
+  		//List intermediateCode = ax.getIntermediateCode ();
+  		//finalCodeFactory.create (intermediateCode);
+  		// En caso de no comentarse las sentencias anteriores puede generar una excepcion
+  		// en las llamadas a cupTest en la entrega de Febrero. Esto es debido a que 
+  		// aún no se tendrá implementada la generación de código intermedio ni final.
+  		// Para la entrega de Junio deberán descomentarse y usarse.
+  		
+  		syntaxErrorManager.syntaxInfo ("Parsing process ended.");
+   :};
+
+	//--------> PRODUCCIONES DE GRAMATICA PARA ESTRUCTURA GLOBAL DEL PROGRAMA 
+	
+	axiom ::= cabecera_programa cuerpo_programa FIN PUNTO ;
+	cabecera_programa ::= PROGRAMA IDENTIFICADOR DOSPUNTOSVERTICALES ;
+	cuerpo_programa ::= seccion_declarativa seccion_instrucciones; 
+	seccion_declarativa ::= subseccion_ctes subseccion_tipos subseccion_var subseccion_subprogramas; 
+	seccion_instrucciones ::= COMIENZO bloque_instrucciones | cadena_vacia; 
+ 
+
+
+
+	//--------> PRODUCCIONES DE GRAMATICA PARA BLOQUE I (DECLARACIONES)
+	//---> PRODUCCIONES PARA SUB_BLOQUE I.1 (CONSTANTES).
+	
+	subseccion_ctes ::= CONSTANTES declaracion_cte | cadena_vacia;
+	declaracion_cte ::= IDENTIFICADOR IGUAL valor_asignable PUNTOCOMA nueva_cte;
+	nueva_cte ::= declaracion_cte | cadena_vacia;  
+	
+	//---> PRODUCCIONES PARA SUB_BLOQUE I.2 (TIPOS).
+	
+	subseccion_tipos ::=  TIPOS declaracion_tipo | cadena_vacia; 
+	declaracion_tipo ::= IDENTIFICADOR IGUAL tipo_complejo PUNTOCOMA nuevo_tipo; 
+	nuevo_tipo ::= declaracion_tipo | cadena_vacia;
+	tipo_complejo ::= VECTOR CORCHEIZQ indice_vector DOSPUNTOSHORIZONTALES indice_vector CORCHEDER DE tipo_primitivo;
+
+	//---> PRODUCCIONES PARA SUB_BLOQUE I.3 (VARIABLES).
+	
+	subseccion_var ::= VARIABLES declaracion_var | cadena_vacia; 
+	declaracion_var ::= listado_ids_con_tipo PUNTOCOMA nueva_lista; 
+	nueva_lista ::= declaracion_var | cadena_vacia; 
+	
+	//---> PRODUCCIONES PARA SUB_BLOQUE I.4 (SUBPROGRAMAS).
+	
+	subseccion_subprogramas ::= SUBPROGRAMAS seccion_procedimientos seccion_funciones | cadena_vacia; 
+	
+	//-> PROCEDIMIENTOS
+
+	seccion_procedimientos ::= nuevo_procedimiento seccion_procedimientos | cadena_vacia; 
+	nuevo_procedimiento ::= cabecera_procedimiento cuerpo_programa fin_de_subprograma;
+	cabecera_procedimiento ::= PROCEDIMIENTO IDENTIFICADOR PARENIZQ lista_parametros PARENDER DOSPUNTOSVERTICALES;  
+	lista_parametros ::= paso_parametro listado_ids_con_tipo |paso_parametro listado_ids_con_tipo PUNTOCOMA lista_parametros | cadena_vacia; 
+	fin_de_subprograma ::= FIN PUNTOCOMA; 
+	paso_parametro ::= VAR | cadena_vacia;  
+
+
+//-> FUNCIONES 
+
+	seccion_funciones ::= nueva_funcion seccion_funciones | cadena_vacia;
+	nueva_funcion ::= cabecera_funcion cuerpo_funcion fin_de_subprograma; 
+	cabecera_funcion ::= FUNCION IDENTIFICADOR PARENIZQ lista_parametros PARENDER DOSPUNTOSVERTICALES tipo_primitivo DOSPUNTOSVERTICALES ; 
+	cuerpo_funcion ::= seccion_declarativa seccion_instru_funcion; 
+	seccion_instru_funcion ::= COMIENZO bloque_control_devolver| cadena_vacia; 
+	
+	//en este bloque de instrucciones se controla que existe una sentencia devolver; 
+	//bloque_instrucciones puede ser cadena_vacia, se contemplan todos los casos (que devolver sea primera sentencia, ultima, o que este entre medio de codigo)
+ 	
+ 	bloque_control_devolver::=     bloque_instrucciones instruccion_devolver bloque_instrucciones;    
+ 	instruccion_devolver ::= DEVOLVER expresion PUNTOCOMA; 
+
+//-------> PRODUCCIONES PDE GRAMATICA PARA BLOQUE II (INSTRUCCIONES) 
+
+//---> EXPRESIONES
+
+	//En el FAQ del analizador sintactico se pide que no se diferencie entre exp logicas y sintacticas por ello: 
+	
+	expresion ::= valor_atomico  | expresion SUMA expresion | expresion PRODUCTO expresion |  PARENIZQ expresion PARENDER;
+	expresion ::= NO expresion | expresion YLOGICO expresion | expresion CONDICIONIGUAL expresion | expresion MENOR expresion;  
+	
+	valor_atomico ::= IDENTIFICADOR | valor_asignable | IDENTIFICADOR acceso_vector | IDENTIFICADOR llamada_funcion; 
+	acceso_vector ::=   CORCHEIZQ indice_vector CORCHEDER | CORCHEIZQ IDENTIFICADOR acceso_vector CORCHEDER;
+	llamada_funcion ::=   PARENIZQ lista_argumentos PARENDER; 
+	lista_argumentos ::= expresion | expresion COMA lista_argumentos | cadena_vacia; 
+	
+//---> INSTRUCCIONES
+
+	bloque_instrucciones ::= nueva_instruccion bloque_instrucciones | cadena_vacia; 
+	nueva_instruccion ::= instruccion_condicional | instruccion_asignacion | instruccion_para | instruccion_salida | llamada_procedimiento; 
+	
+	instruccion_asignacion ::= IDENTIFICADOR IGUAL expresion PUNTOCOMA | IDENTIFICADOR acceso_vector IGUAL expresion PUNTOCOMA; 
+	
+	instruccion_condicional ::=  condicion_simple FINALCONDICIONAL | condicion_doble FINALCONDICIONAL; 
+    condicion_simple ::= SI expresion ENTONCES DOSPUNTOSVERTICALES bloque_instrucciones ;
+    condicion_doble ::= condicion_simple SINO DOSPUNTOSVERTICALES bloque_instrucciones ; 
+	
+	instruccion_para ::= PARA IDENTIFICADOR EN expresion DOSPUNTOSHORIZONTALES expresion DOSPUNTOSVERTICALES bloque_instrucciones FINPARA; 
+
+	instruccion_salida ::= ESCRIBIR PARENIZQ parametro_salida PARENDER PUNTOCOMA; 
+	
+	parametro_salida ::= expresion | CADENATEXTO | cadena_vacia;
+	
+	llamada_procedimiento ::= IDENTIFICADOR llamada_funcion PUNTOCOMA;  //se reutiliza la produccion "llamada_funcion" para evitar duplicacion de codigo
+
+//-------> TRATAMIENTO ERRORES (BLOQUE III)
+
+axiom ::= cabecera_programa cuerpo_programa {: syntaxErrorManager.syntaxFatalError(informa(0)); :};
+instruccion_salida ::= ESCRIBIR PARENIZQ CIERTO PARENDER PUNTOCOMA {:syntaxErrorManager.syntaxFatalError(informa(2));:};
+//instruccion_salida ::= ESCRIBIR PARENIZQ FALSO PARENDER PUNTOCOMA {:syntaxErrorManager.syntaxFatalError(informa(2));:};
+cabecera_programa::= PROGRAMA IDENTIFICADOR {: syntaxErrorManager.syntaxFatalError(informa(1)); :}; 
+declaracion_cte ::= IDENTIFICADOR IGUAL:id valor_asignable nueva_cte {: syntaxErrorManager.syntaxFatalError(informa(3)+ id.getLine()); :}; 
+declaracion_var ::= listado_ids_con_tipo nueva_lista {: syntaxErrorManager.syntaxFatalError(informa(4)); :}; 
+
+//-------> PRODUCCIONES ESPECIALES PARA AUMENTAR FACILIDAD DE COMPRENSION DE GRAMATICA
+
+cadena_vacia ::= ; 
+listado_ids_con_tipo::= listado_ids DOSPUNTOSVERTICALES tipo_dato; 
+listado_ids ::= IDENTIFICADOR | IDENTIFICADOR COMA listado_ids; 
+tipo_dato ::= BOOLEANO | ENTERO | IDENTIFICADOR; 
+indice_vector ::= NUMEROENTERO | IDENTIFICADOR; 
+valor_asignable ::= CIERTO | FALSO | NUMEROENTERO; 
+tipo_primitivo ::= BOOLEANO | ENTERO; 

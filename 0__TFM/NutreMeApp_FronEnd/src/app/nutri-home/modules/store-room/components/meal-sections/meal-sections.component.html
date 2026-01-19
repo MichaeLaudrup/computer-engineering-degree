@@ -1,0 +1,22 @@
+<div class="store-layout__component">
+    <div class="store-layout__food-galery">
+        <ng-container *ngFor="let mealSection of mealSections; let i = index">
+            <image-target class="img-target"
+             [title]="mealSection.name"
+             (elementClicked)="navigateToListMeals(mealSection._id)"
+             (editModeClicked)="enableEditMode(mealSection)"
+             (deleteModeClicked)="enableDeleteMode($event)"
+             [withEditMode]="editMood"
+             [item-id]="mealSection._id"
+             [imgSrc]="urlSectionsImages + mealSection.imgPath"
+             #img>
+            </image-target>
+        </ng-container>
+        <div class="empty__section" (click)="showCreateUpdateModal()">
+            <span class="material-icons-outlined icon-action">
+                add
+            </span>
+            <span class="text-action">Añadir nueva sección</span>
+        </div>
+    </div>
+</div>

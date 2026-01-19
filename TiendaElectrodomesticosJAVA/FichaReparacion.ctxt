@@ -1,0 +1,22 @@
+#BlueJ class context
+comment0.target=FichaReparacion
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ FichaDeReparacion\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=id\ descripcion\ reparador\ cliente\ producto\ recepcion\ estado\ garantia
+comment1.target=FichaReparacion(java.lang.String,\ java.lang.String,\ Tecnico,\ Cliente,\ Electrodomestico,\ java.util.Date,\ java.lang.String,\ boolean)
+comment2.params=
+comment2.target=java.lang.String\ getID()
+comment3.params=
+comment3.target=java.util.Date\ getfechaFinalizaci\u00F3n()
+comment4.params=day\ month\ year
+comment4.target=void\ establecerModificarFechaFinalizacion(int,\ int,\ int)
+comment5.params=day\ month\ year
+comment5.target=void\ setFechaFinalizacion(int,\ int,\ int)
+comment6.params=precio
+comment6.target=void\ setPrecio(double)
+comment7.params=
+comment7.target=boolean\ getGarantia()
+comment8.params=nuevoEstado
+comment8.target=void\ setEstado(java.lang.String)
+comment9.params=
+comment9.target=java.lang.String\ toString()
+numComments=10

@@ -1,0 +1,48 @@
+MOVE #0,/65535				;Quadruple - [INICIAR_DATOS_GLOBALES A1, 0, null]
+
+MOVE #1,/65534				;Quadruple - [MV T_0, 1, null]
+
+MOVE #9,/65533				;Quadruple - [MV T_1, 9, null]
+
+ADD /65533,#1
+MOVE .A,/65530				;Quadruple - [ADD T_4, T_1, 1]
+
+MOVE #65535,/65529				;Quadruple - [MVA T_5, A1, null]
+
+MOVE /65529,.R1
+MOVE /65534,[.R1]				;Quadruple - [STP T_5, T_0, null]
+
+L_0:				;Quadruple - [INL L_0, null, null]
+
+MOVE /65529, .R1
+MOVE [.R1],/65527				;Quadruple - [MVP T_7, T_5, null]
+
+CMP /65527,/65530
+BZ /L_4
+MOVE #0, /65528
+BR /L_5
+L_4: MOVE #1, /65528
+L_5:				;Quadruple - [EQ T_6, T_7, T_4]
+
+CMP #0,/65528
+BN /L_1				;Quadruple - [BRT T_6, L_1, null]
+
+MOVE #65535,/65531				;Quadruple - [MVA T_3, A1, null]
+
+MOVE /65531, .R1
+MOVE [.R1],/65532				;Quadruple - [MVP T_2, T_3, null]
+
+WRINT /65532				;Quadruple - [ESCRIBIR_ENTERO T_2, null, null]
+
+ADD /65527,#1
+MOVE .A,/65526				;Quadruple - [ADD T_8, T_7, 1]
+
+MOVE /65529,.R1
+MOVE /65526,[.R1]				;Quadruple - [STP T_5, T_8, null]
+
+BR /L_0				;Quadruple - [BR L_0, null, null]
+
+L_1:				;Quadruple - [INL L_1, null, null]
+
+HALT				;Quadruple - [HALT null, null, null]
+

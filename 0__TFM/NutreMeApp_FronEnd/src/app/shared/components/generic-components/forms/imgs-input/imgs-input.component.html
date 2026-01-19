@@ -1,0 +1,18 @@
+<p class="img-input-label">Imagen para la sección</p>
+<div [formGroup]="formGroupFromParent" class="imgs-input-container" [ngClass]="{'imgs-input-opened': isChoosingAImg, 'align-center': !isChoosingAImg}" (click)="boxClicked()">
+    <span *ngIf="!isChoosingAImg && actualPath === ''" class="material-icons-outlined">
+        perm_media
+    </span>
+    <ng-container *ngIf="!isChoosingAImg && actualPath !== ''"  >
+        <img [src]="actualPath" alt="" style="width: 90px; height: 90px;">
+    </ng-container>
+    <div class="imgs-selection-gallery" 
+        [ngClass]="{'gallery-hidden': !isChoosingAImg}"
+        [ngStyle]="{'height': calcHeight()}">
+        <img 
+            *ngFor="let img of imgsOptions; 
+            let i = index" class="imgs-selection__img" 
+            [src]="img" alt="" 
+            (click)="selectImg(i)">
+    </div>
+</div>

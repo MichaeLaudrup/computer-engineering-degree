@@ -1,0 +1,12 @@
+WRSTR /L_0
+WRCHAR #10				;Quadruple - [ESCRIBE_TEXTO L_0, null, null]
+
+WRSTR /L_1
+WRCHAR #10				;Quadruple - [ESCRIBE_TEXTO L_1, null, null]
+
+HALT				;Quadruple - [HALT null, null, null]
+
+L_0:DATA "HOLA"				;Quadruple - [ETIQUETA HOLA, L_0, null]
+
+L_1:DATA "MUNDO!"				;Quadruple - [ETIQUETA MUNDO!, L_1, null]
+

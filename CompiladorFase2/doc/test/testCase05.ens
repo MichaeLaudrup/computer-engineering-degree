@@ -1,0 +1,165 @@
+MOVE #0,/65535				;Quadruple - [INICIAR_DATOS_GLOBALES V, 0, null]
+
+MOVE #1,/65528				;Quadruple - [MV T_4, 1, null]
+
+MOVE #1,/65532				;Quadruple - [MV T_0, 1, null]
+
+SUB /65532,#1
+MOVE .A,/65531				;Quadruple - [SUB T_1, T_0, 1]
+
+MOVE #65535,/65530				;Quadruple - [MVA T_2, V, null]
+
+SUB /65530,/65531
+MOVE .A,/65529				;Quadruple - [SUB T_3, T_2, T_1]
+
+MOVE /65529,.R1
+MOVE /65528,[.R1]				;Quadruple - [STP T_3, T_4, null]
+
+MOVE #2,/65522				;Quadruple - [MV T_10, 2, null]
+
+MOVE #2,/65526				;Quadruple - [MV T_6, 2, null]
+
+SUB /65526,#1
+MOVE .A,/65525				;Quadruple - [SUB T_7, T_6, 1]
+
+MOVE #65535,/65524				;Quadruple - [MVA T_8, V, null]
+
+SUB /65524,/65525
+MOVE .A,/65523				;Quadruple - [SUB T_9, T_8, T_7]
+
+MOVE /65523,.R1
+MOVE /65522,[.R1]				;Quadruple - [STP T_9, T_10, null]
+
+MOVE #1,/65516				;Quadruple - [MV T_16, 1, null]
+
+SUB /65516,#1
+MOVE .A,/65515				;Quadruple - [SUB T_17, T_16, 1]
+
+MOVE #65535,/65514				;Quadruple - [MVA T_18, V, null]
+
+SUB /65514,/65515
+MOVE .A,/65513				;Quadruple - [SUB T_19, T_18, T_17]
+
+MOVE /65513, .R1
+MOVE [.R1],/65512				;Quadruple - [MVP T_20, T_19, null]
+
+MOVE #2,/65511				;Quadruple - [MV T_21, 2, null]
+
+SUB /65511,#1
+MOVE .A,/65510				;Quadruple - [SUB T_22, T_21, 1]
+
+MOVE #65535,/65509				;Quadruple - [MVA T_23, V, null]
+
+SUB /65509,/65510
+MOVE .A,/65508				;Quadruple - [SUB T_24, T_23, T_22]
+
+MOVE /65508, .R1
+MOVE [.R1],/65507				;Quadruple - [MVP T_25, T_24, null]
+
+SUB /65507,#1
+MOVE .A,/65506				;Quadruple - [SUB T_26, T_25, 1]
+
+MOVE #65535,/65505				;Quadruple - [MVA T_27, V, null]
+
+SUB /65505,/65506
+MOVE .A,/65504				;Quadruple - [SUB T_28, T_27, T_26]
+
+MOVE /65504, .R1
+MOVE [.R1],/65503				;Quadruple - [MVP T_29, T_28, null]
+
+MUL /65512,/65503
+MOVE .A,/65502				;Quadruple - [MUL T_30, T_20, T_29]
+
+MOVE #2,/65501				;Quadruple - [MV T_31, 2, null]
+
+SUB /65501,#1
+MOVE .A,/65500				;Quadruple - [SUB T_32, T_31, 1]
+
+MOVE #65535,/65499				;Quadruple - [MVA T_33, V, null]
+
+SUB /65499,/65500
+MOVE .A,/65498				;Quadruple - [SUB T_34, T_33, T_32]
+
+MOVE /65498, .R1
+MOVE [.R1],/65497				;Quadruple - [MVP T_35, T_34, null]
+
+SUB /65497,#1
+MOVE .A,/65496				;Quadruple - [SUB T_36, T_35, 1]
+
+MOVE #65535,/65495				;Quadruple - [MVA T_37, V, null]
+
+SUB /65495,/65496
+MOVE .A,/65494				;Quadruple - [SUB T_38, T_37, T_36]
+
+MOVE /65494, .R1
+MOVE [.R1],/65493				;Quadruple - [MVP T_39, T_38, null]
+
+SUB /65493,#1
+MOVE .A,/65492				;Quadruple - [SUB T_40, T_39, 1]
+
+MOVE #65535,/65491				;Quadruple - [MVA T_41, V, null]
+
+SUB /65491,/65492
+MOVE .A,/65490				;Quadruple - [SUB T_42, T_41, T_40]
+
+MOVE /65490, .R1
+MOVE [.R1],/65489				;Quadruple - [MVP T_43, T_42, null]
+
+MUL /65502,/65489
+MOVE .A,/65488				;Quadruple - [MUL T_44, T_30, T_43]
+
+MOVE #3,/65520				;Quadruple - [MV T_12, 3, null]
+
+SUB /65520,#1
+MOVE .A,/65519				;Quadruple - [SUB T_13, T_12, 1]
+
+MOVE #65535,/65518				;Quadruple - [MVA T_14, V, null]
+
+SUB /65518,/65519
+MOVE .A,/65517				;Quadruple - [SUB T_15, T_14, T_13]
+
+MOVE /65517,.R1
+MOVE /65488,[.R1]				;Quadruple - [STP T_15, T_44, null]
+
+WRSTR /L_0
+WRCHAR #10				;Quadruple - [ESCRIBE_TEXTO L_0, null, null]
+
+MOVE #1,/65486				;Quadruple - [MV T_46, 1, null]
+
+SUB /65486,#1
+MOVE .A,/65485				;Quadruple - [SUB T_47, T_46, 1]
+
+MOVE #65535,/65484				;Quadruple - [MVA T_48, V, null]
+
+SUB /65484,/65485
+MOVE .A,/65483				;Quadruple - [SUB T_49, T_48, T_47]
+
+MOVE /65483, .R1
+MOVE [.R1],/65482				;Quadruple - [MVP T_50, T_49, null]
+
+WRINT /65482				;Quadruple - [ESCRIBIR_ENTERO T_50, null, null]
+
+WRSTR /L_1
+WRCHAR #10				;Quadruple - [ESCRIBE_TEXTO L_1, null, null]
+
+MOVE #3,/65481				;Quadruple - [MV T_51, 3, null]
+
+SUB /65481,#1
+MOVE .A,/65480				;Quadruple - [SUB T_52, T_51, 1]
+
+MOVE #65535,/65479				;Quadruple - [MVA T_53, V, null]
+
+SUB /65479,/65480
+MOVE .A,/65478				;Quadruple - [SUB T_54, T_53, T_52]
+
+MOVE /65478, .R1
+MOVE [.R1],/65477				;Quadruple - [MVP T_55, T_54, null]
+
+WRINT /65477				;Quadruple - [ESCRIBIR_ENTERO T_55, null, null]
+
+HALT				;Quadruple - [HALT null, null, null]
+
+L_0:DATA "POS 1:"				;Quadruple - [ETIQUETA POS 1:, L_0, null]
+
+L_1:DATA "POS 3:"				;Quadruple - [ETIQUETA POS 3:, L_1, null]
+

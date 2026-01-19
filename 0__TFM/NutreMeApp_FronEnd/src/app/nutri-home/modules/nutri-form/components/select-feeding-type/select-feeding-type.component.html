@@ -1,0 +1,31 @@
+<div class="form">
+    <h2 class="objective-question">¿Qué tipo de alimentación llevas?</h2>
+    <button class="btn btn--objective" type="button" (click)="selectFeedingType(FeedingType.OMNIVORE)">
+        <span class="btn-icon">
+            <dinamic-svg-icon [svg-name]="'meat'" svg-width="30px" svg-height="30px"></dinamic-svg-icon>
+        </span>
+        <div>
+            <span class="btn-title">Omnivoró</span>
+            <span class="btn-description">Consumes una dieta variada que incluye carnes</span>
+        </div>
+        
+    </button>
+    <button class="btn btn--objective" type="button" (click)="selectFeedingType(FeedingType.VEGETARIAN)">
+        <span class="btn-icon">
+            <dinamic-svg-icon [svg-name]="'vegetarian'" svg-width="40px" svg-height="40px"></dinamic-svg-icon>
+        </span>
+        <div>
+            <span class="btn-title">Vegetariano</span>
+            <span class="btn-description">Consumes una dieta que no incluye carnes</span>
+        </div>
+    </button>
+    <button class="btn btn--objective" type="button" (click)="selectFeedingType(FeedingType.VEGAN)">
+        <span class="btn-icon">
+            <dinamic-svg-icon svg-name="vegan" svg-width="35px" svg-height="35px"></dinamic-svg-icon>
+        </span>
+        <div>
+            <span class="btn-title">Vegano</span>
+            <span class="btn-description">No consumes ningún producto de origen animal</span>
+        </div>
+    </button>
+</div>

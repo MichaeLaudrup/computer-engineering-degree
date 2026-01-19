@@ -1,0 +1,27 @@
+#BlueJ class context
+comment0.target=GestorEmpleados
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ GestorEmpleados\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=
+comment1.target=GestorEmpleados()
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ GestorEmpleados\r\n
+comment10.params=x
+comment10.target=void\ miPrueba(Electrodomestico)
+comment2.params=dni\ nombre\ apellido\ domicilio\ telefono
+comment2.target=void\ addEmpleado(java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String)
+comment2.text=\r\n\ M\u00E9todo\ que\ inserta\ empleado\ con\ datos\ recibidos\r\n\ como\ par\u00E1metros.\r\n\ @param\ dni\ empleado\r\n\ @param\ nombre\ empleado\r\n\ @param\ apellido\ empleado\r\n\ @param\ domicilio\ empleado\r\n\ @param\ telefono\ empleado\r\n
+comment3.params=dni
+comment3.target=void\ modificarEmpleado(java.lang.String)
+comment3.text=\r\n\ Este\ m\u00E9todo\ esta\ especilizado\ en\ la\ modificaci\u00F3n\ de\ datos\ de\ un\ \r\n\ determinado\ usuario.\r\n
+comment4.params=dni
+comment4.target=boolean\ esTecnico(java.lang.String)
+comment5.params=dni
+comment5.target=void\ imprimeEmpleado(java.lang.String)
+comment6.params=
+comment6.target=void\ listarEmpleados()
+comment7.params=
+comment7.target=void\ listarTecnicos()
+comment8.params=key
+comment8.target=void\ darDeBaja(java.lang.String)
+comment9.params=
+comment9.target=void\ datosPorDefecto()
+numComments=11

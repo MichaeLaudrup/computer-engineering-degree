@@ -1,0 +1,229 @@
+:host {
+    display: block;
+    padding: 1rem; 
+    overflow: hidden;
+}
+
+ul{
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+    align-items: center;
+    border-radius: var(--global-border-radius);
+}
+
+.list-item {
+    width: 100%;
+    max-width: 375px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    transition: all .7s ease-in-out;
+    background-color: var(--elements-bg-primary);
+    color: var(--text-generic-color); 
+    height: 60px;
+    border-radius: var(--global-border-radius);
+    box-shadow: rgba(0, 0, 0, 0.822) 0px 3px 8px;
+    &__img {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        transition: all .7s ease-in-out;
+        width: 60px;
+        height: 60px;
+        background-repeat: no-repeat; 
+        background-position: center center;
+        background-size: cover;
+    }
+
+    &__content {
+        height: 60px;
+        transition: all .7s ease-in-out;
+        padding: .5rem 1rem; 
+    }
+    &__name {
+        display: inline-block;
+        font-size: var(--font-size-normal); 
+        font-weight: bold;
+        margin-bottom: .25rem;
+    }
+}
+
+.list-item__tags{
+    padding: .5rem 1rem; 
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem; 
+    .list-item__tag {
+        display: flex; 
+        align-items: center;
+        gap: .5rem; 
+        padding: .5rem; 
+        font-size: .75rem;
+        background-color: var(--elements-bg-secondary-transparent);
+        border-radius: var(--global-border-radius);
+    }
+}
+
+
+.list-properties{
+    display: flex;
+    gap: 1rem; 
+    * {
+        transition: all .7s ease-in-out;
+    }
+    .list-property{
+        display: flex;
+        align-items: center;
+    }
+
+    .list-property__icon{
+        display: flex;
+        align-items: center;
+        padding: .25rem 0;
+        margin-right: .45rem;
+        span {
+            font-size: 1.25rem;
+        }
+
+        span.energy{
+            color:var(--c1); 
+        }
+
+        span.scale{
+            color: var(--c8); 
+        }
+            
+    }
+
+    .list-property__value{
+        margin-right: .20rem;
+    }
+}
+
+.list-item.item-list-expanded{
+    flex-direction: column;
+    flex-wrap: nowrap;
+    height: auto;
+    .list-item__content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        gap: 1rem; 
+        padding-bottom: 1rem;
+    }
+    .list-item__img {
+        width: calc(100% - 1px + 1px);
+        height: 300px;
+    }
+    .list-item__name {
+        transition: all .7s ease-in-out;
+        font-size: var(--font-size-md);
+        padding: 1rem 1.5rem; 
+        margin-bottom: 0;
+    }
+
+    .list-properties{
+        justify-content: center;
+        gap: 2rem; 
+        .list-property__icon{
+            span{
+                font-size: 2rem;
+            }
+        }
+
+        .list-property__value{
+            margin-right: .5rem;
+        }
+    }
+
+    .list-item-actions{ 
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        background-color: var(--elements-bg-secondary-transparent);
+        .icons{
+            display: flex; 
+        }
+
+        .list-item__name{
+            font-size: var(--font-size-md);
+        }
+        span {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .7s ease-in-out;
+            &:hover{
+                transform: scale(1.2);
+            }
+        }
+        
+    }
+
+    .meal-section{
+        background-color: var(--elements-bg-secondary);
+        padding: 1rem; 
+        border-radius: var(--global-border-radius);
+        box-shadow: rgba(0, 0, 0, 0.712) 0px 3px 8px;
+    }
+    .section-title{
+        padding: 0rem 0rem 1rem 0rem; 
+        font-size: var(--font-size-normal);
+    }
+
+    .description {
+        font-size: var(--font-size-small);
+        line-height: 1.5; 
+    }
+
+
+
+    .macronutriens{
+
+        width: 100%;
+
+        display: grid;
+        gap: 1rem; 
+        grid-template-columns: 1fr 1fr 1fr;
+        justify-content: center;
+        align-items: center;
+    }
+
+}
+
+@media screen and (min-width: 550px) {
+    ul {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    
+}
+
+@media screen and (min-width: 1024px) {
+    ul {
+        display: grid;
+        gap: 1rem; 
+        justify-items: flex-start;
+        align-items: flex-start;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    
+}
+
+@media screen and (min-width: 1400px) {
+    ul {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+    
+}

@@ -1,0 +1,14 @@
+<form class="section-meal-form__container" [formGroup]="sectionMealForm">
+    <div class="form-inputs">
+        <text-input [controlName]="'sectionName'" [form-group]="sectionMealForm" labelText="Introduce nombre de sección"></text-input>
+        <input-file label="Imagen de sección"(fileLoaded)="updateFileToUpload($event)"></input-file>
+        <div *ngIf="editMode && !file" class="img-loaded">
+            <p>Imagen de sección actual: </p>
+            <img [src]="basicStaticRoute + sectionToEdit.imgPath" alt="">
+        </div>
+    </div>
+    <generic-button
+        (clicked)="processForm()"
+        [button-text]="editMode ? 'Editar' : 'Añadir'">
+    </generic-button>
+</form>

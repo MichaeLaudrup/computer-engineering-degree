@@ -1,0 +1,1 @@
+export * from './resolvers/list-meals.resolver'; 

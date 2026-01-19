@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="ArquitecturaPLI-2019-2020/src"/>
+	<classpathentry kind="lib" path="ArquitecturaPLI-2019-2020/lib/compiler-api.jar"/>
+	<classpathentry kind="lib" path="ArquitecturaPLI-2019-2020/lib/Cup.jar"/>
+	<classpathentry kind="lib" path="ArquitecturaPLI-2019-2020/lib/JFlex.jar"/>
+	<classpathentry kind="output" path="ArquitecturaPLI-2019-2020/classes"/>
+</classpath>

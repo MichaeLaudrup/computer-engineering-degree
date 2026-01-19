@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.date-input {
+    font-size: 1.25rem;
+    padding: .5rem;
+    background-color: transparent;
+    color: var(--text-generic-color);
+    outline: none;
+    border: none; 
+    border-bottom: 2px solid var(--text-generic-color);
+}
+
+.date-input::-webkit-calendar-picker-indicator{
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.arrow {
+    padding: .25rem; 
+    display: block;
+    color: var(--text-generic-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+}

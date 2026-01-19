@@ -1,0 +1,40 @@
+<div class="container" [style.height.px]="height">
+    <div class="brand-container">
+        <div class="text-container">
+            <h1 class="title"><img class="logo-img" src="/assets/proyectoLogo/logotipo-nutriapp-black.png" alt=""></h1>
+        </div>
+    </div>
+    <div class="content-container">
+        <div class="sigup-container" *ngIf="(smallMode) ? !isLoginMode : true">
+            <form [formGroup]="signUpForm" class="auth-form" (ngSubmit)="processSignUp()">
+                <text-input labelText="Nombre de usuario" controlName="name" [form-group]="signUpForm"></text-input>
+                <text-input labelText="Email" controlName="email" [form-group]="signUpForm"></text-input>
+                <text-input labelText="Password" controlName="password" [form-group]="signUpForm"></text-input>
+                <text-input labelText="Repite Password" controlName="passwordConfirm" [form-group]="signUpForm"></text-input>
+                <button class="btn">Crear cuenta</button>
+            </form>
+        </div>
+        <div class="login-container" *ngIf="(smallMode) ? isLoginMode : true">
+            <form [formGroup]="logInForm" class="auth-form" (ngSubmit)="processLogIn()">
+                <text-input labelText="Nombre de usuario" controlName="email" [form-group]="logInForm"></text-input>
+                <text-input labelText="Password" controlName="password" [form-group]="logInForm"></text-input>
+                <button class="btn">Log-in</button>
+            </form>
+        </div>
+        <div class="slider" *ngIf="!smallMode" [ngClass]="{'desplazed-to-right': !isLoginMode}">
+            <div *ngIf="isLoginMode" @alternate-message>
+                <h2 class="slider-title">Bienvenido de Nuevo</h2>
+                <p class="slider-description">Para conectarte a Nutreme app provee tu información personal</p>
+                <button class="btn btn-slider btn--inverter" (click)="isLoginMode = !isLoginMode">No tengo cuenta</button>
+            </div>
+            <div *ngIf="!isLoginMode" @alternate-message>
+                <h2 class="slider-title">Hola, Amigo! </h2>
+                <p class="slider-description">Bienvenido a Nutriapp, provee información básica para la creación de tu cuenta</p>
+                <button class="btn btn-slider btn--inverter" (click)="isLoginMode = !isLoginMode">Ya tengo cuenta</button>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>

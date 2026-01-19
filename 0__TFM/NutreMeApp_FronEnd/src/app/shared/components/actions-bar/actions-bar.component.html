@@ -1,0 +1,30 @@
+<ul class="action-bar" (click)="clickInside = true">
+    <li class="action-item" (click)="editActionsActive = !editActionsActive">
+        <span class="material-icons-outlined">
+           {{ !editActionsActive? 'more_vert' : 'close'}}
+        </span>
+    </li>
+</ul>
+<div class="weil" *ngIf="editActionsActive">
+
+</div>
+<nav class="sub-menu" *ngIf="editActionsActive" @subMenuAnimation>
+    <ul>
+        <li (click)="triggerCreateMode()">
+            <span class="icon material-icons-outlined">
+                add
+            </span>
+            <span>
+                {{ createText}}
+            </span>
+        </li>
+        <li (click)="triggerEditMode()">
+            <span class="icon material-icons-outlined">
+                {{ (!onEditMode) ? 'edit_note' : 'edit_off' }}
+                </span>
+            <span>
+                {{ (!onEditMode) ? editText : 'Salir modo edición' }}
+            </span>
+        </li>
+    </ul>
+</nav>

@@ -1,0 +1,15 @@
+<div class="container" [style.minHeight.px]="height">
+    <ng-container *ngIf="deviceMode !== DeviceModee.NoSupport; else noSupportMessage">
+        <asidebar-menu></asidebar-menu>
+        <div class="app-content" [@delayDesaparition]="actualRute">
+            <router-outlet #outlet="outlet" (activate)="processOutlet($event, outlet)"></router-outlet>
+        </div>
+    </ng-container>
+    <ng-template #noSupportMessage>
+        <h1>Esta aplicación no tiene soporte para dispositivos tan pequeños</h1>
+    </ng-template>
+    
+</div>
+<ng-container *ngIf="modalStatus !== typeModalSpecialization.NoModalActive">
+    <modal [modal-status]="modalStatus"></modal>
+</ng-container>

@@ -1,0 +1,248 @@
+@import 'material-icons/iconfont/material-icons.css'; 
+@import 'responsive.mixins'; 
+
+:root {
+
+    /* APP-COLORS */
+    --c1: #d9ed92;
+    --c2: #b5e48c;
+    --c3: #99d98c;
+    --c4: #76c893;
+    --c5: #52b69a;
+    --c6: #34a0a4;
+    --c7: #168aad;
+    --c8: #1a759f;
+    --c9: #1e6091;
+    --c10: #184e77;
+
+    /* APP-COLOR-BRIGH-VARATION */
+    --c3-light01: #a7f1c1; 
+    --c10-dark01: #081b2a;
+    --c10-dark02:  #0c273c; 
+
+
+    /* Fondos */
+    --elements-bg-primary: #0d283d; 
+    --elements-bg-secondary: #081b2a;
+    --elements-bg-secondary-transparent: #081b2ab7; 
+    --app-background: #06131d;
+    
+    /* Color */
+    --prim-color: #184e77; 
+
+    /* Chart colors */
+    --chart-color01 : #76c893; 
+    --chart-color02 : #34a0a4; 
+    --chart-color03 : #1a759f; 
+    --chart-color04 : #34a0a4; 
+
+    /* Colores tipografia */
+    --text-generic-color: #ccecc6;
+    --text-title-color: #ade1a3; 
+    --text-link-color: var(--c4); 
+
+
+
+    /* font-size  */
+    --font-size-big: 2rem; 
+    --font-size-md-big: 1.5rem; 
+    --font-size-md: 1.25rem; 
+    --font-size-normal: 1rem;
+    --font-size-small: .75rem;  
+
+    /* Colores SVG */
+    --svg-generic-color: #a7f1c1;
+
+    --main-color: #69db7c;
+    --main-color-light: #b2f2bb;
+    --main-color-dark: #2f9e44;
+    --border-radius: 5px;
+    --color-principal-transparente: rgba(150, 150, 150, 0.432);
+    --color-principal-oscuro-transparente: rgba(139, 139, 139, 0.322);
+    --global-border-radius: 5px;
+    /* Margenes */
+    --margin-btm-high: 2rem;
+
+    --generic-shadow: rgba(0, 0, 0, 0.801) 0px 3px 8px;; 
+}
+
+*,
+*::after,
+*::before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    font-size: 16px;
+    font-family: 'Merriweather', serif;
+    color: var(--text-generic-color)
+}
+
+ul {
+    list-style: none;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    color: var(--text-title-color);
+    font-variant: small-caps;
+    letter-spacing: 1px; 
+}
+
+span.small-btn {
+    cursor: pointer;
+    display: inline-block; 
+    padding: .2rem;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    border-radius: var(--global-border-radius);
+    background-color: var(--c9);
+    animation: name duration timing-function delay iteration-count direction fill-mode;
+    transition: all .7s ease-in-out;
+    &:hover {
+        transform: translateY(-4px);
+    }
+
+    &:active {
+        transform: translateY(2px);
+        transition: all .1s ease-in-out;
+    }
+}
+
+
+
+
+.btn--efect {
+    color:red; 
+    transition: all .7s ease-in-out; 
+}
+
+.btn {
+    cursor: pointer;
+    border-radius: var(--global-border-radius);
+    border: 2px solid var(--text-generic-color); 
+    padding: .5rem 2rem;
+    font-family: inherit;
+    transition: all .7s ease-in-out;
+    background-color: transparent;
+    color: var(--text-generic-color); 
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    &:hover {
+        transform: translateY(-8px);
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    }
+
+    &:active {
+        transition: all .1s ease-in-out;
+        transform: translateY(-2px);
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    }
+
+    &.btn--inverter{
+        color: var(--elements-bg-primary);
+        border-color: var(--elements-bg-primary) ;
+    }
+}
+
+
+.btn-short {
+    padding: .5rem .75rem; 
+    font-family: inherit;
+    border-radius: var(--global-border-radius);
+    border:none; 
+}
+
+.btn--success {
+    background-color: var(--text-generic-color);
+}
+
+.btn--delete {
+    background-color: red;
+}
+
+.units {
+    color: var(--text-title-color);
+    font-weight: bold;
+    
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+    
+}
+
+/* Track */
+::-webkit-scrollbar-track {border-radius: var(--global-border-radius);
+background-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+border-radius: var(--global-border-radius);
+background: var(--text-generic-color); 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: #555;
+}
+
+
+
+
+@keyframes fromLeft_light {
+    0% {
+        transform: translateX(12%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media screen and (min-width: 200px) {
+    html,
+    body {
+        font-size: 14px;
+    }
+}
+
+@media screen and (min-width: 850px) {
+    html,
+    body {
+        font-size: 15px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    html,
+    body {
+        font-size: 17px;
+    }
+}
+
+@keyframes expandFromCenter {
+    0% {
+        opacity: 0;
+        transform: scale(.2);
+    }
+    80% {
+        transform: scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/*! * * * * * * * * * * * * * * * * * * * *\  
+  CSShake :: shake-little
+  v1.5.0
+  CSS classes to move your DOM
+  (c) 2015 @elrumordelaluz
+  http://elrumordelaluz.github.io/csshake/
+  Licensed under MIT
+\* * * * * * * * * * * * * * * * * * * * */.shake-little{display:inherit;transform-origin:center center}.shake-freeze,.shake-constant.shake-constant--hover:hover,.shake-trigger:hover .shake-constant.shake-constant--hover{animation-play-state:paused}.shake-freeze:hover,.shake-trigger:hover .shake-freeze,.shake-little:hover,.shake-trigger:hover .shake-little{animation-play-state:running}@keyframes shake-little{2%{transform:translate(1px, 0px) rotate(.5deg)}4%{transform:translate(0px, 1px) rotate(.5deg)}6%{transform:translate(1px, 0px) rotate(.5deg)}8%{transform:translate(0px, 0px) rotate(.5deg)}10%{transform:translate(1px, 1px) rotate(.5deg)}12%{transform:translate(0px, 0px) rotate(.5deg)}14%{transform:translate(0px, 0px) rotate(.5deg)}16%{transform:translate(0px, 0px) rotate(.5deg)}18%{transform:translate(0px, 1px) rotate(.5deg)}20%{transform:translate(0px, 0px) rotate(.5deg)}22%{transform:translate(0px, 0px) rotate(.5deg)}24%{transform:translate(1px, 0px) rotate(.5deg)}26%{transform:translate(1px, 1px) rotate(.5deg)}28%{transform:translate(0px, 1px) rotate(.5deg)}30%{transform:translate(1px, 1px) rotate(.5deg)}32%{transform:translate(1px, 1px) rotate(.5deg)}34%{transform:translate(1px, 1px) rotate(.5deg)}36%{transform:translate(1px, 1px) rotate(.5deg)}38%{transform:translate(0px, 0px) rotate(.5deg)}40%{transform:translate(0px, 1px) rotate(.5deg)}42%{transform:translate(1px, 1px) rotate(.5deg)}44%{transform:translate(0px, 0px) rotate(.5deg)}46%{transform:translate(1px, 1px) rotate(.5deg)}48%{transform:translate(1px, 0px) rotate(.5deg)}50%{transform:translate(1px, 0px) rotate(.5deg)}52%{transform:translate(0px, 0px) rotate(.5deg)}54%{transform:translate(0px, 0px) rotate(.5deg)}56%{transform:translate(1px, 1px) rotate(.5deg)}58%{transform:translate(1px, 0px) rotate(.5deg)}60%{transform:translate(0px, 1px) rotate(.5deg)}62%{transform:translate(0px, 0px) rotate(.5deg)}64%{transform:translate(0px, 0px) rotate(.5deg)}66%{transform:translate(0px, 1px) rotate(.5deg)}68%{transform:translate(1px, 0px) rotate(.5deg)}70%{transform:translate(1px, 0px) rotate(.5deg)}72%{transform:translate(1px, 0px) rotate(.5deg)}74%{transform:translate(1px, 0px) rotate(.5deg)}76%{transform:translate(0px, 1px) rotate(.5deg)}78%{transform:translate(0px, 0px) rotate(.5deg)}80%{transform:translate(0px, 0px) rotate(.5deg)}82%{transform:translate(0px, 0px) rotate(.5deg)}84%{transform:translate(1px, 0px) rotate(.5deg)}86%{transform:translate(1px, 0px) rotate(.5deg)}88%{transform:translate(0px, 0px) rotate(.5deg)}90%{transform:translate(0px, 1px) rotate(.5deg)}92%{transform:translate(0px, 0px) rotate(.5deg)}94%{transform:translate(1px, 0px) rotate(.5deg)}96%{transform:translate(1px, 1px) rotate(.5deg)}98%{transform:translate(0px, 1px) rotate(.5deg)}0%,100%{transform:translate(0, 0) rotate(0)}}.shake-little:hover,.shake-trigger:hover .shake-little,.shake-little.shake-freeze,.shake-little.shake-constant{animation-name:shake-little;animation-duration:100ms;animation-timing-function:ease-in-out;animation-iteration-count:infinite}
