@@ -1,0 +1,6 @@
+#BlueJ class context
+comment0.target=Operacion
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Operaciones\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=ejecutor\ afectado\ tipoOperacion\ electroInvolcrado\ fechaOperacion
+comment1.target=Operacion(Empleado,\ Cliente,\ java.lang.String,\ Electrodomestico,\ java.util.Date)
+numComments=2

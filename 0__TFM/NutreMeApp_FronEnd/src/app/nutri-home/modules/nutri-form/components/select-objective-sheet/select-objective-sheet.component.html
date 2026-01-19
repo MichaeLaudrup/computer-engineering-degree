@@ -1,0 +1,33 @@
+<div class="form">
+    <h2 class="objective-question">¿Cual es tu objetivo? </h2>
+    <button class="btn btn--objective" type="button" (click)="selectObjective(NutritionTarget.gainWeight)">
+        <span class="btn-icon">
+            <dinamic-svg-icon [svg-name]="'gain-weight'" svg-width="35px" svg-height="35px"></dinamic-svg-icon>
+        </span>
+        <span>Subir de peso</span>
+    </button>
+    <button class="btn btn--objective" type="button" (click)="selectObjective(NutritionTarget.hypertrophy)">
+        <span class="btn-icon">
+            <dinamic-svg-icon [svg-name]="'muscle'" svg-width="35px" svg-height="35px"></dinamic-svg-icon>
+        </span>
+        <span>Aumentar músculo</span>
+    </button>
+    <button class="btn btn--objective" type="button" (click)="selectObjective(NutritionTarget.maintainWeight)">
+        <span class="btn-icon">
+            <dinamic-svg-icon [svg-name]="'mantain-weight'" svg-width="35px" svg-height="35px"></dinamic-svg-icon>
+        </span>
+        <span>Mantener peso</span>
+    </button>
+    <button class="btn btn--objective" type="button" (click)="selectObjective(NutritionTarget.define)">
+        <span class="btn-icon">
+            <dinamic-svg-icon [svg-name]="'define'" svg-width="35px" svg-height="35px"></dinamic-svg-icon>
+        </span>
+        <span>Definir</span>
+    </button>
+    <button class="btn btn--objective" type="button" (click)="selectObjective(NutritionTarget.lostWeight)">
+        <span class="btn-icon">
+            <dinamic-svg-icon [svg-name]="'loss-weight'" svg-width="35px" svg-height="35px"></dinamic-svg-icon>
+        </span>
+        <span>Bajar de peso</span>
+    </button>
+</div>

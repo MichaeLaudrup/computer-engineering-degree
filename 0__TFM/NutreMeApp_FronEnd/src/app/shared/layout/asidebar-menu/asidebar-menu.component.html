@@ -1,0 +1,57 @@
+<div class="container">
+    <div class="sidebar-menu" [ngClass]="{'opened': isMenuOpened}">
+        <nav class="navigation">
+            <ul class="navigation__list">
+                <li class="navigation__item" routerLinkActive="activeItem">
+                    <a class="navigation__link" (click)="isMenuOpened = !isMenuOpened">
+                        <span class="navigation__icon material-icons-outlined">
+                            reorder
+                        </span>
+                    </a>
+                </li>
+                <li class="navigation__item" routerLinkActive="activeItem">
+                    <a routerLink="/nutriapp/nutri-data" class="navigation__link">
+                        <span class="navigation__icon material-icons-outlined">
+                            bar_chart
+                        </span>
+                    </a>
+                </li>
+                <li class="navigation__item" routerLinkActive="activeItem">
+                    <a routerLink="/nutriapp/nutri-store" class="navigation__link">
+                        <span class="navigation__icon material-icons-outlined">
+                            restaurant_menu    
+                        </span>
+                    </a>
+                </li>
+                <li class="navigation__item" routerLinkActive="activeItem">
+                    <a routerLink="/nutriapp/nutri-diet" class="navigation__link">
+                        <span class="navigation__icon material-icons-outlined">
+                            date_range
+                        </span>
+                    </a>
+                </li>
+
+                <li class="navigation__item" routerLinkActive="activeItem">
+                    <a routerLink="/nutriapp/nutri-form" class="navigation__link">
+                        <span class="navigation__icon material-icons-outlined">
+                            edit_note
+                            </span>
+                    </a>
+                </li>
+
+                <li class="navigation__item" routerLinkActive="activeItem">
+                    <a class="navigation__link" (click)="processLogout()">
+                        <span class="navigation__icon material-icons-outlined">
+                            logout
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="content">
+            <img src="/assets/proyectoLogo/logotipo-nutriapp.png" alt="" style="width:40%">
+            <user-resume></user-resume>
+            <user-data-resume></user-data-resume>
+        </div>
+    </div>
+</div>

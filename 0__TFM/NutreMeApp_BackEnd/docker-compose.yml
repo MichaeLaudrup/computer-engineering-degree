@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  web: 
+    container_name: nutreme_app_backend
+    restart: always
+    build: .
+    ports: 
+      - "8000:3000"
+      - "9229:9229"
+    depends_on: 
+      - mongo
+    volumes:
+      - .:/usr/src/app
+  mongo:
+    container_name: mongo-db
+    hostname: mongodb
+    image: mongo:latest
+    restart: unless-stopped
+    ports: 
+      - "27018:27017"
+    volumes:
+      - ./data:/data/db
+    logging:
+      driver: "none"
+
+  #mongo-express:
+    #container_name: mongo-express
+    #restart: always
+    #depends_on:
+    #  - mongo
+    #image: mongo-express
+    #ports:
+    #  - 8081:8081
+    #environment:
+    #  ME_CONFIG_OPTIONS_EDITORTHEME: 3024-night
+    #  ME_CONFIG_MONGODB_SERVER: mongo
+    #logging:
+    #  driver: none

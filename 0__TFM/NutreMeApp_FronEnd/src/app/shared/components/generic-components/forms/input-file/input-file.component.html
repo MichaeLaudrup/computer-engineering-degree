@@ -1,0 +1,26 @@
+<p>{{ label }}</p>
+<div class="file-drop-area" [ngClass]="{'is-active':isActive}">
+
+    <ng-container *ngIf="!imagePreviewUrl; else imgpreview">
+        <span class="fake-btn">Elige imagen</span>
+        <span class="file-msg">o arrastra y suelta aquí</span>
+        <input 
+            class="file-input"
+            type="file"
+            (change)="processChange($event)"
+            (dragenter)="isActive = true"
+            (click)="isActive=true"
+            (mouseenter)="isActive=true"
+            (mouseleave)="isActive=false"
+            (dragleave)="isActive=false"
+            (blur)="isActive=false"
+            (drop)="processDrop($event)">
+
+    </ng-container>
+    <ng-template #imgpreview>
+        <div class="img-preview">
+            <img [src]="imagePreviewUrl" alt="">
+        </div>
+    </ng-template>
+  </div>
+  

@@ -1,0 +1,22 @@
+#BlueJ class context
+comment0.target=GestorClientes
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ GestorClientes\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=dni
+comment1.target=boolean\ clienteExiste(java.lang.String)
+comment1.text=\r\n\ M\u00C3\u00A9todo\ que\ comprueba\ que\ un\ cliente\ existe\ en\ el\ registro\ de\ la\ tienda\r\n\ @return\ true\ si\ cliente\ existe;\ false\ si\ cliente\ no\ existe\r\n
+comment2.params=
+comment2.target=GestorClientes()
+comment3.params=dni\ nombre\ apellido\ domicilio\ telefono
+comment3.target=void\ addCliente(java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String)
+comment3.text=\r\n\ M\u00C3\u00A9todo\ que\ inserta\ cliente\ con\ datos\ recibidos\r\n\ como\ par\u00C3\u00A1metros.\r\n\ @param\ dni\ cliente\r\n\ @param\ nombre\ cliente\r\n\ @param\ apellido\ cliente\r\n\ @param\ domicilio\ cliente\r\n\ @param\ telefono\ cliente\r\n
+comment4.params=dni
+comment4.target=void\ imprimeCliente(java.lang.String)
+comment4.text=\r\n\ Este\ m\u00C3\u00A9todo\ imprime\ los\ datos\ de\ un\ \u00C3\u00BAnico\ usuario\r\n\ @param\ Dni\ del\ usuario\ a\ imprimir\r\n
+comment5.params=
+comment5.target=void\ datosPorDefecto()
+comment6.params=
+comment6.target=void\ listarClientes()
+comment7.params=dni
+comment7.target=void\ modificarCliente(java.lang.String)
+comment7.text=\r\n\ Este\ m\u00C3\u00A9todo\ esta\ especilizado\ en\ la\ modificaci\u00C3\u00B3n\ de\ datos\ de\ un\ \r\n\ determinado\ usuario.\r\n
+numComments=8

@@ -1,0 +1,28 @@
+:host{
+    display: block; 
+    height: 100%;
+}
+
+.section-meal-form__container {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    gap:2rem; 
+
+    .form-inputs{
+        display: flex;
+        flex-direction: column;
+        gap: 2rem; 
+    }
+}
+
+generic-button {
+    align-self: center;
+}
+.img-loaded {
+    width: 100%;
+    img{
+        width: 100%;
+    }
+}

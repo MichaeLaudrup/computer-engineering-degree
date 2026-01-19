@@ -1,0 +1,41 @@
+<h2>Tus datos</h2>
+<div class="data-container">
+    <div class="data-item-box">
+        <dinamic-svg-icon svg-name="height" svg-width="25px" svg-height="25px"></dinamic-svg-icon>
+        {{ userData.fisiologicData.height / 100}} m
+    </div>
+    <div class="data-item-box">
+        <dinamic-svg-icon svg-name="weight" svg-width="25px" svg-height="25px"></dinamic-svg-icon>
+        {{ userData.fisiologicData.weight}} kg
+    </div>
+    <div class="data-item-box">
+        <dinamic-svg-icon svg-name="age" svg-width="25px" svg-height="25px"></dinamic-svg-icon>
+        {{ userData.fisiologicData.age}} años
+    </div>
+    <div class="data-item-box">
+        <dinamic-svg-icon svg-name="kcal" svg-width="25px" svg-height="25px"></dinamic-svg-icon>
+        {{ userData.fisiologicData.mba | number:'2.0-0'}} kcal
+    </div>
+    <div class="data-item-box">
+        <div class="doble-icons">
+            <dinamic-svg-icon svg-name="kcal" svg-width="25px" svg-height="25px"></dinamic-svg-icon>
+            <div class="supper-possed">
+                <dinamic-svg-icon svg-name="sleeping" svg-width="15px" svg-height="15px"></dinamic-svg-icon>
+            </div>
+        </div>
+        
+        {{ userData.fisiologicData.mbaWithObjective | number:'2.0-0'}} kcal
+    </div>
+
+    <div class="data-item-box">
+        <div class="doble-icons">
+            <dinamic-svg-icon svg-name="kcal" svg-width="30px" svg-height="30px"></dinamic-svg-icon>
+            <div class="supper-possed center">
+                <dinamic-svg-icon svg-name="sport" svg-width="15px" svg-height="15px"></dinamic-svg-icon>
+            </div>
+        </div>
+        
+        {{ userData.fisiologicData.mbaWithActivityAndObjetive | number:'2.0-0'}} kcal
+    </div>
+
+</div>

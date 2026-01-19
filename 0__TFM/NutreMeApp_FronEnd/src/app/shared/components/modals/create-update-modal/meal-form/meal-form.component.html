@@ -1,0 +1,20 @@
+
+<div class="mode-selectors" *ngIf="!editMode">
+    <button class="selector-box" (click)="searchMode = false" [ngClass]="{'selected': !searchMode}">Crear nuevo</button>
+    <button class="selector-box" (click)="searchMode = true" [ngClass]="{'selected': searchMode}">Buscar existente</button>
+</div>
+
+<form class="meal-form__component" [formGroup]="mealForm" *ngIf="!searchMode">
+    <text-input [form-group]="mealForm" controlName="name" labelText="Nombre" ></text-input>
+    <slider-input [form-group]="mealForm" controlName="kcal" textLabel="Kilo calorías" units="kcal" [minValue]="1" [maxValue]="1000"></slider-input>
+    <slider-input [form-group]="mealForm" controlName="carboHydrates" textLabel="Carbohidratos"></slider-input>
+    <slider-input [form-group]="mealForm" controlName="proteins" textLabel="Proteinas"></slider-input>
+    <slider-input [form-group]="mealForm" controlName="fats" textLabel="Grasas"></slider-input>
+    <button type="button" class="btn" (click)="!editMode ? createMeal() : editMeal()">
+        {{(editMode) ? 'Editar alimento' : 'Añadir alimento'}}
+    </button>
+</form>
+
+<meals-result-list *ngIf="searchMode" (selectedMealsUpdated)="addGroupOfAliments($event)">
+
+</meals-result-list>

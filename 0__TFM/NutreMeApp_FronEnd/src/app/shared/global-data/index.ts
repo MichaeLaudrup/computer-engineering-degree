@@ -1,0 +1,1 @@
+export * from './infoModals.data';  

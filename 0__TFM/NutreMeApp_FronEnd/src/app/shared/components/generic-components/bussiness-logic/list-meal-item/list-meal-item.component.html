@@ -1,0 +1,12 @@
+<div class="list-item-container" (click)="itemClicked()">   
+    
+    <li class="list-item">
+        <div 
+            class="img-container" 
+            [style.backgroundImage]="'url('+(meal.srcImg.startsWith('assets') ? meal.srcImg : foodImagesURL + meal.srcImg + '.jpg') + ')'">
+        </div>
+        <div class="list-content">
+            <span>{{ meal.name}}</span>
+        </div>
+    </li>
+</div>

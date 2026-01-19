@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.target=Hogar
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Hogar\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=elementosBasicos\ eficiencia
+comment1.target=Hogar(java.lang.String[],\ java.lang.String)
+comment2.params=identificador\ marca\ modelo\ color\ precio\ cantidad\ eficiencia
+comment2.target=Hogar(java.lang.String,\ java.lang.String,\ java.lang.String,\ java.lang.String,\ double,\ int,\ java.lang.String)
+comment3.params=
+comment3.target=java.lang.String\ getEficiencia()
+comment4.params=eficiencia
+comment4.target=void\ setEficiencia(java.lang.String)
+comment5.params=
+comment5.target=java.lang.String\ toString()
+numComments=6

@@ -1,0 +1,11 @@
+MOVE #2,/65535				;Quadruple - [MV T_0, 2, null]
+
+MOVE #3,/65534				;Quadruple - [MV T_1, 3, null]
+
+SUB /65535,/65534
+MOVE .A,/65533				;Quadruple - [SUB T_2, T_0, T_1]
+
+WRINT /65533				;Quadruple - [ESCRIBIR_ENTERO T_2, null, null]
+
+HALT				;Quadruple - [HALT null, null, null]
+

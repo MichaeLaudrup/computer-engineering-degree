@@ -1,0 +1,85 @@
+:host{
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.diet-container{
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; 
+    position: relative; 
+
+    .upload-button{
+        position: fixed;
+        left: 50%; 
+        bottom: 75px; 
+        transform: translateX(-50%);
+        .btn{
+            background-color: var( --c4);
+            color: var(--app-background);
+            border: var(--app-background);
+            font-size: 1.25rem;
+        }
+        animation: expandFromCenterSpecial .7s ease-in-out backwards;
+    }
+}
+
+.daily-macro-container{
+    background-color: var(--elements-bg-primary);
+    border-radius: var(--global-border-radius);
+    padding: 1rem 0rem; 
+    animation: .7s .5s ease-in-out expandFromCenter; 
+    animation-fill-mode: backwards;
+}
+
+.scheduled-meals-list{
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 1.5rem;
+}
+
+@media screen and (min-width: 768px) {
+    .scheduled-meals-list{
+        grid-template-columns: 1fr 1fr;
+        column-gap: 1.5rem;
+
+    }
+}
+
+@keyframes expandFromCenter {
+    0% {
+        opacity: 0;
+        transform: scale(.2);
+    }
+    80% {
+        transform: scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes expandFromCenterSpecial {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) scale(.2);
+    }
+    80% {
+        transform: translateX(-50%) scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .diet-container{
+        .upload-button{
+            bottom: 25px;
+        }
+    }
+}

@@ -1,0 +1,28 @@
+<div class="img-target__component" >
+    <div class="img-target__title" [ngClass]="{'div shake-little shake-constant shake-constant--hover': withEditMode}">
+        <p class="img-target__title-text" (click)="emitElementClicked()">
+            {{ title }}
+        </p>
+        <div class="actions">
+            <div class="div" class="shake-little shake-constant shake-constant--hover">  
+                <span 
+                    *ngIf="withEditMode"
+                    class="icon material-icons-outlined"
+                    (click)="editClicked()"
+                    >
+                    edit
+                </span>
+            </div>
+            <span 
+                *ngIf="withEditMode"
+                class="icon material-icons-outlined"
+                (click)="deleteClicked()"
+                >
+                delete
+            </span>
+        </div>
+    </div>
+    <div class="img-target__img-container" (click)="emitElementClicked()">
+        <img [src]="imgSrc" alt="" width="100%" loading="lazy">
+    </div>
+</div>

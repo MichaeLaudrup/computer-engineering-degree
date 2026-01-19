@@ -1,0 +1,44 @@
+:host {
+    display: block;
+}
+
+
+ul {
+    padding-top: 1rem;
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem; 
+}
+li{
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 1rem; 
+    font-size: .85rem;
+}
+
+.circle {
+    display: inline-block;
+    width: .5rem;
+    height: .5rem;
+    border-radius: 50%;
+    background-color: red;
+}
+
+@media screen and (max-width: 420px) {
+    highcharts-chart{
+        height: 235px;
+    }   
+}
+
+@media screen and (max-width: 776px) {
+    highcharts-chart{
+        height: 300px;
+    }   
+}
+@media screen and (min-width: 777px) {
+    highcharts-chart{
+        height: 350px;
+    }   
+}

@@ -1,0 +1,52 @@
+
+<div class="modal-container" [style.height.px]="height">
+    <div class="modal-component"  [ngClass]="{'feedback-mood': feedBackMood, 'question-mode': questionMode && !feedBackMood}" (click)="wasInside = true">
+        <div class="modal__feedBackMessage" *ngIf="feedBackMood">
+            {{ feedBackText}}
+            <span class="material-icons-outlined">
+                check_circle
+            </span>
+        </div>
+
+        <div class="modal__header" *ngIf="!feedBackMood && !questionMode">
+            <h2> {{modalData.title}}</h2>
+            <span class="material-icons-outlined" (click)="hideModal()">
+                close
+            </span>
+        </div>
+
+        <div class="modal__content" *ngIf="!feedBackMood && !questionMode">
+            <ng-container [ngSwitch]="modalData.typeOfModalSpecialization">
+                <section-meal-form
+                 *ngSwitchCase="modalSpecializations.createMealSection"
+                 ></section-meal-form>
+                 <section-meal-form
+                 *ngSwitchCase="modalSpecializations.UpdateMealSection"
+                 [sectionToEdit]="sectionToUpdate"
+                 [editMode]="true"
+                 ></section-meal-form>
+                 <meal-form 
+                    [sectionId]="itemId"
+                    *ngSwitchCase="modalSpecializations.CreateMeal_InSection">
+                 </meal-form>
+
+                 <meal-form 
+                    [editMode]="true"
+                    [sectionId]="itemId"
+                    *ngSwitchCase="modalSpecializations.UpdateMealInSection"
+                    [meal]="meal">
+                 </meal-form>
+            </ng-container>
+        </div>
+        <div class="modal__question" *ngIf="questionMode && !feedBackMood">
+            <p>{{ modalData.title }}</p>
+            <p class="modal__question-actions">
+                <button class="btn-short btn--delete" (click)="affirmativeAnswer()">Si</button>
+                <button class="btn-short btn--success" (click)="hideModal()">No</button>
+            </p>
+        </div>
+       <div class="modal__veil" *ngIf="loadingMood && !feedBackMood">
+            <loading-spinner></loading-spinner>
+       </div>
+    </div>  
+</div>

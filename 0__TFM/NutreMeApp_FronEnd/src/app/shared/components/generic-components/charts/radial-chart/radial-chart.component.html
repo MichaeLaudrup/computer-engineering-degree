@@ -1,0 +1,19 @@
+<div class="radial-chart__container" (window:resize)="updateHeight()" [style.height.px]="height" #container >
+    <div class="outer-circle-fill" [style.background]="bcColor">
+        <div class="outer-circle" [style.background]="'conic-gradient( ' + firstColor + ' ' + (actualDegree /2) +'deg,'+ secondColor +' ' + actualDegree +'deg, transparent '+ (actualDegree) +'deg)'">
+            <div class="inner-circle" >
+                <div class="data">
+                    <div class="quantitie">
+                        <span class="value">{{ value }} </span>
+                        <span class="units">{{ units }}</span>
+                    </div>
+                    <div class="label">
+                        {{ label }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+

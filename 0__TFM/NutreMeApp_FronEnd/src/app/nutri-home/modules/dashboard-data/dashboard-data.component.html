@@ -1,0 +1,87 @@
+<div class="dashboard-container">
+
+    <div class="user-box" *ngIf="deviceMode !==  DEVICE_MODE.Small && deviceMode !==  DEVICE_MODE.ExtraSmall ">
+        <user-resume class="on-dashboard-data"></user-resume>
+    </div>
+    <div class="data-user-box" *ngIf="deviceMode !==  DEVICE_MODE.Small && deviceMode !==  DEVICE_MODE.ExtraSmall ">
+        <user-data-resume class="on-dashboard-data">
+        </user-data-resume>
+    </div>
+    <div class="dashboard__box box__daily-macro" >
+        <div class="box__header">
+            <div class="box__header-title">
+                <h3>Tu consumo de hoy</h3>
+            </div>
+            <app-modal-info-activator></app-modal-info-activator> 
+        </div>
+        <div class="box__content">
+            <dialy-macro-chart class="on-dashboard-data"></dialy-macro-chart>
+        </div>
+    </div>
+
+    <div class="dashboard__box box__water">
+        <div class="box__header">
+            <div class="box__header-title">
+                <h3>Agua díaria</h3>
+            </div>
+            <app-modal-info-activator></app-modal-info-activator> 
+        </div>
+        <div class="box__content box__water">
+            <span class="material-icons-outlined water-icon">
+                water_drop
+            </span>
+            <span>
+                0 de {{fisiologicData.diaryWater | number:'1.2-2'}} <span class="units">Litros/Día</span> 
+            </span>
+        </div>
+    </div>
+
+    <div class="dashboard__box box__imc">
+        <div class="box__header">
+            <div class="box__header-title">
+                <h3>IMC</h3>
+            </div>
+            <app-modal-info-activator></app-modal-info-activator> 
+        </div>
+        <div class="box__content">
+            <imc-chart [imc]="fisiologicData.imc"></imc-chart>
+        </div>
+    </div>
+
+    <div class="dashboard__box box__mba">
+        <div class="box__header">
+            <div class="box__header-title">
+                <h3>Metabolismo basal</h3>
+            </div>
+            <app-modal-info-activator></app-modal-info-activator> 
+        </div>
+        <div class="box__content">
+            <app-mba-chart [mba]="fisiologicData.mba" [mba-with-activity]="fisiologicData.mbaWithObjective" [mba-with-act-objetive]="fisiologicData.mbaWithActivityAndObjetive" [objetive]="objetive"></app-mba-chart>
+        </div>  
+    </div>
+    <div class="dashboard__box box__macro">
+        <div class="box__header">
+            <div class="box__header-title">
+                <h3>Distribución Macronutrientes</h3>
+            </div>
+            <app-modal-info-activator></app-modal-info-activator>
+        </div>
+        <div class="box__content">
+            <app-macronutrients-chart >
+            </app-macronutrients-chart>
+        </div>
+    </div>
+
+
+    <div class="dashboard__box kcal-history-box">
+        <div class="box__header">
+            <div class="box__header-title">
+                <h3>Historial de consumo calórico</h3>
+            </div>
+            <app-modal-info-activator></app-modal-info-activator>
+        </div>
+        <div class="box__content">
+            <app-basic-line-chart></app-basic-line-chart>
+        </div>
+    </div>
+</div>

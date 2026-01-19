@@ -1,0 +1,35 @@
+<li class="food-item-container" [ngClass]="{'expanded':expanded}" >
+    <div class="food-item" [ngClass]="{'done': done}">
+        <div class="food-item__checkbox" style="height:25px">
+            <check-box (check-clicked)="processCheckClicked($event)" [initial-value]="done" [idName]="'check-' + index + '-' + food.name" [initial-value]="done"></check-box> 
+        </div>
+        <div class="food-item__data">
+            <span class="food-item__data-name">
+                {{ nameFormated}}
+            </span>
+            <div class="food-item__data-nutri">
+                <span class="food-item__data-kcal">
+                    <span class="material-icons-outlined energy">electric_bolt</span>
+                    <span >{{ food.kcal}} <span class="units">Kcal</span></span> 
+                </span>
+                <span class="material-icons-outlined toggle" (click)="expanded = !expanded" [ngClass]="{'rotate': expanded}">
+                    chevron_right
+                </span>
+            </div>
+        </div>
+    </div>
+    <ul class="food-detail">
+        <li>
+            <dinamic-svg-icon svg-name="carbohydrates" svg-width="15px" svg-height="15px"></dinamic-svg-icon>
+            <span class="name"> Carbohidratos: </span>{{ food.carboHydrates}} gr
+        </li>
+        <li>
+            <dinamic-svg-icon svg-name="protein" svg-width="15px" svg-height="15px"></dinamic-svg-icon>
+            <span class="name"> Proteínas: </span> {{ food.proteins}} gr</li>
+        <li>
+            <dinamic-svg-icon svg-name="fats" svg-width="15px" svg-height="15px"></dinamic-svg-icon>
+            <span class="name"> Grasas: </span> {{ food.fats}} gr
+        </li>
+    </ul>
+
+</li>

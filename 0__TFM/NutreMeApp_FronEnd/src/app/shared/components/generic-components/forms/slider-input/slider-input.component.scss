@@ -1,0 +1,130 @@
+.label {
+    display: inline-block;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    height: 20px;
+}
+.input-value {
+    background-color: transparent;
+    border: none; 
+    color: var(--text-generic-color); 
+    width: 4rem;
+    font-size: var(--font-size-normal);
+    font-family: inherit;
+    padding: .25rem .25rem 0rem .25rem;
+    text-align: right;
+    &:focus{
+        outline: none;
+        border-bottom: 2px solid var(--text-generic-color);
+    }
+}
+
+.label-value {
+    display: flex;
+    justify-content: space-between;
+}
+.range-slider {
+    width: 100%;
+    position: relative;
+    display: flex;
+    .slider {
+        width: 100%;
+        -webkit-appearance: none;
+        -moz-appearance:none;
+        appearance:none;
+        height: 0.25rem;
+        outline: none;
+        border-radius: 3px;
+        background-color: var(--elements-bg-secondary);
+
+        &::-webkit-slider-thumb{
+            -webkit-appearance: none;
+            -moz-appearance:none;
+            appearance:none;
+            height: 1rem;
+            width: 1rem;
+            cursor: pointer;
+            z-index: 1000;
+            position: relative;
+            border-radius: var(--global-border-radius);
+            background-color: var(--text-generic-color);
+        }
+
+    }
+    .slider-thumb{
+        position: absolute;
+        width: 1.25rem;
+        height: 1.25rem;
+        background-color: rgb(26, 26, 26);
+        border-radius: 50%;
+        top: 50%;
+        left: 50%; 
+        z-index: 900;
+        transform: translate(-50%, -50%);
+        box-shadow: inset 0px 1px 2px #909090;
+
+        &::before {
+            content: ''; 
+            position: absolute; 
+            top: 50%;
+            left: 50%; 
+            z-index: 900;
+            transform: translate(-50%, -50%);
+            width: .5rem;
+            height: .5rem;
+            background: #333;
+            border-radius: inherit;
+            transition: .3s;
+        }
+    }
+
+    &:hover .slider-thumb::before {
+        background-color: var(--text-generic-color);
+    }
+
+    .tooltip {
+        display: block;
+        position: absolute; 
+        width: 5rem;
+        height: 2rem;
+        top: 100%; 
+        left: 50%; 
+        transform: translate(-50%, 25%); 
+        background-color: #090909;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 35px;
+        z-index: 1;
+        box-shadow: 0px 3px 10px #1f1f1f,
+            inset 0px 1px 2px #909090;
+        &::before {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 10px solid #090909;
+            bottom: -0.5em; 
+            left: 50%; 
+            top: 0; 
+            z-index: 0; 
+            transform: translate(-50%, -100%)
+        }
+    }
+
+    .progress {
+        width: 50%;
+        height: 0.40rem;
+        border-radius: 3px;
+        position: absolute;
+        left: 0; 
+        top: 50%; 
+        transform: translateY(-50%);
+        pointer-events: none;
+        background: linear-gradient( 90deg, var(--c2), var(--c3));
+    }
+
+}

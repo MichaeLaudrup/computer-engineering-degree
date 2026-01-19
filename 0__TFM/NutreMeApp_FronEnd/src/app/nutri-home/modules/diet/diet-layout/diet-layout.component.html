@@ -1,0 +1,21 @@
+
+<div class="diet-container">
+
+    <day-selector [form-group]="dailyNutritionalAnalisysForm" control-name="date"></day-selector>
+    <div class="daily-macro-container">
+        <dialy-macro-chart [bindedToNgrx]="false" [dailyMealsRegister]="dailyMealsRegister"></dialy-macro-chart>
+    </div>
+    <div class="scheduled-meals-list" >
+        <scheduled-meals 
+            *ngFor="let scheduledMeal of dailyMealsRegister.scheduledMeals; let i = index"
+            [scheduled-title]="scheduledMeal.name"
+            [index]="i"
+            [mealsScheduled]="scheduledMeal"
+            (alimentFromDoneToUndone)="modeFoodToRecomendations($event, i)"
+            (alimentFromUndoneToDone)="moveFoodToDone($event, i)">
+        </scheduled-meals>
+    </div>
+    <div class="upload-button" *ngIf="isSomethingChanged">
+        <button class="btn" type="buttom" (click)="uploadToServer()">Actualizar registro</button>
+    </div>
+</div>

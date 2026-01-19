@@ -1,0 +1,1776 @@
+package compiler.syntax;
+
+// Declaracion de importaciones
+//(No modificar las proporcionadas. Se pueden agregar mas)
+
+import java_cup.runtime.Symbol;
+import java.util.*;
+import java.util.ArrayList;
+
+import es.uned.lsi.compiler.lexical.*;
+import es.uned.lsi.compiler.code.*;
+import es.uned.lsi.compiler.intermediate.*;
+import es.uned.lsi.compiler.semantic.*;
+import es.uned.lsi.compiler.semantic.symbol.*;
+import es.uned.lsi.compiler.semantic.type.*;
+import es.uned.lsi.compiler.syntax.*;
+
+import compiler.CompilerContext;
+import compiler.lexical.*;
+import compiler.syntax.nonTerminal.*;
+import compiler.semantic.*;
+import compiler.semantic.symbol.*;
+import compiler.semantic.type.*;
+import compiler.intermediate.*;
+import compiler.code.*;
+
+
+
+// Declaracion del codigo de usuario
+//====================================================
+// INICIO ACTION CODE DEL PARSER
+//====================================================
+action code   {:
+
+	SyntaxErrorManager   syntaxErrorManager   = CompilerContext.getSyntaxErrorManager();
+	SemanticErrorManager semanticErrorManager = CompilerContext.getSemanticErrorManager ();
+	ScopeManagerIF       scopeManager         = CompilerContext.getScopeManager ();
+	FinalCodeFactoryIF   finalCodeFactory     = CompilerContext.getFinalCodeFactory ();
+
+	ArrayList<QuadrupleIF> listaStrings = new ArrayList<QuadrupleIF>();
+	/*
+	 * El objetivo de este metodo es centralizar la impresion de los errores, y asi tener las acciones de la semantica mucho mas limpia y legible
+	 * la relacion entre el identificador numerico de error y el texto informativo de error se recoge en un tabla en el apendice de la memoria de
+	 * la practica.
+	 *@param identificador unico, indicativo del tipo de mensaje de error que se debe imprimir.
+	 *@param numero indicativo de la linea en la que se produce el error.
+	 */
+	public void manejarError(int identificador_error, int linea_error){
+		String texto_informativo = "Error en la linea " + linea_error + ": ";
+		switch(identificador_error){
+			case 1:
+				texto_informativo += "El simbolo referenciado no ha sido declarado previamente.";
+				break;
+			case 2:
+				texto_informativo += "Incompatibilidad entre parametros de la llamada y parametros formales de la funcion. Revise que esta todo en orden.";
+				break;
+			case 3:
+				texto_informativo += "El identificador del final de programa o subprograma no coincide con el identificador de la cabecera del programa o subprograma.";
+				break;
+			case 4:
+				texto_informativo += "El identificador del tipo que esta usted declarando ya ha sido usado para definir otros elementos (los nombres de tipos compuestos no pueden volver a utilizarse en ningun ambito)";
+				break;
+			case 5:
+				texto_informativo += "La referencia del lado izquierdo de una sentencia de asignacion solo puede ser una variable de tipo simple no constante o una posicion a un vector. ";
+				break;
+			case 6:
+				texto_informativo += "Se ha hecho referencia a una posicion de un vector con una expresion que da como resultado un valor logico.";
+				break;
+			case 7:
+				texto_informativo += "Se esta haciendo referencia a una posicion de un vector, con una constante o un valor numerico que excede los limites de este vector";
+				break;
+			case 8:
+				texto_informativo += "Se esta utilizando es una expresion una llamada a un procedimiento.";
+				break;
+			case 9:
+				texto_informativo += "Esta haciendo referencia a un simbolo que no consiste en un proceso";
+				break;
+			case 10:
+				texto_informativo += "Se esta llamando a un parametros sin especificar parametros actuales, cuando el proceso contiene parametros formales";
+				break;
+			case 11:
+				texto_informativo += "Se estan declarando dos o mas variables con mismo nombre en la cabecera de un procedimiento o funcion .";
+				break;
+			case 12:
+				texto_informativo += "Los procedimientos y funciones tienen paso por valor en este caso, solo se permite el paso de parametros de tipo simple (logico o entero)";
+				break;
+			case 13:
+				texto_informativo += "El identificador especificado ya esta siendo usado en otro simbolo en el mismo ambito";
+				break;
+			case 14:
+				texto_informativo += "No existe sentencia return en todos los puntos de salida de la funcion, revise.";
+				break;
+			case 15:
+				texto_informativo += "Se debe usar una expresion logica en la parte condicional de un IF";
+
+			case 16:
+				texto_informativo += "El identificador que delimita el limite del vector no es una constante sino otro tipo de simbolo";
+				break;
+			case 17:
+				texto_informativo += "Se esta haciendo referencia a una constante cuyo valor no es numerico para delimitar una cota de un vector";
+				break;
+			case 18:
+				texto_informativo += "En la declaracion de un tipo vector el limite inferior no puede ser mayor que el limite superior";
+				break;
+			case 19:
+				texto_informativo += "Tanto en el lado izquierdo como el derecho de un simbolo MAYOR, debe haber expresiones arimeticas";
+				break;
+			case 20:
+				texto_informativo += "Una funcion no puede retornar un dato complejo de tipo vector.";
+				break;
+			case 21:
+				texto_informativo += "Dentro de una funcion hay varios retornos que no coinciden en el tipo de dato que devuelven. ";
+				break;
+			case 22:
+				texto_informativo += "Inconcordancia de tipo de datos, entre el retorno formal de la funcion y el retorno aplicado en la seccion BEGIN-END de la funcion";
+				break;
+			case 23:
+				texto_informativo += "El iterador dentro del bucle for debe ser de tipo entero. ";
+				break;
+			case 24:
+				texto_informativo += "La expresion de inicio o de fin de la cabecera del bucle for no es de tipo entero";
+				break;
+			case 25:
+				texto_informativo += "En la sentencia WRITEINT solo se pueden enviar como parametros numeros enteros. ";
+				break;
+			case 26:
+				texto_informativo += "Incompatibilidad de tipos en la expresion logica o aritmetica";
+				break;
+			case 27:
+				texto_informativo += "Incompatibilidad de tipos en una sentencia de asignacion.";
+				break;
+			case 28:
+				texto_informativo += "En la asignacion dentro de una sentencia for se debe utilizar una variable simple, es decir, no se pueden usar constantes o vectores en el lado derecho de la asignacion";
+				break;
+			case 29:
+				texto_informativo += "Tipo de dato no declarado previamente";
+				break;
+			case 30:
+				texto_informativo +=": El nombre de la referencia especificado no hace alusion a un tipo vector sino a otro tipo de dato.";
+			default:
+		}
+	    //SE FINALINA EL ANALISIS SEMANTICO INFORMANDO AL USUARIO DEL ERROR COMETIDO
+		semanticErrorManager.semanticFatalError(texto_informativo);
+	}
+
+	/*
+	 * Este metodo comprueba si un simbolo existe en la pila de ambitos abiertos y ademas devuelve si el simbolo es una instancia de un tipo determinado.
+	 * por el usuario a traves de los parametros actuales al invocar esta funcion
+	 * @param String: identificador del simbolo sujeto de estudio
+	 * @param String: identificador del tipo simbolo que sea desea comprobar si es instancia (SymbolFunction, SymbolProcedure...etc);
+	 * @param int : numero de linea para controlar que en caso de que se produzca error saber en que linea se esta produciendo ese error.
+	 */
+	public boolean identificadorEsInstanciaDe(String identificador, String tipo_o_simbolo_a_comparar, int linea_control_error){
+		if(scopeManager.containsSymbol(identificador) || scopeManager.containsType(identificador)){  //se comprueba que el simbolo o tipo existe en los ambitos abiertos
+			SymbolIF simbolo_objeto_estudio =null;   //se parte de la premisa de que el simbolo es null
+			TypeIF tipo_objeto_estudio =null; //se parte de la premisa de que el tipo es null
+			if(tipo_o_simbolo_a_comparar.startsWith("Symbol")){   //se comprueba si la comparacion que se quiere hacer es sobre un simbolo o un tipo
+				simbolo_objeto_estudio = scopeManager.searchSymbol(identificador); //en caso de ser un simbolo, se obtiene el simbolo referenciado
+			}else{
+				tipo_objeto_estudio = scopeManager.searchType(identificador); //en caso de ser un tipo, se obtiene el tipo referenciado
+			}
+			switch(tipo_o_simbolo_a_comparar){
+				case "SymbolFunction":
+					return (simbolo_objeto_estudio instanceof SymbolFunction);
+				case "SymbolProcedure":
+					return (simbolo_objeto_estudio instanceof SymbolProcedure);
+				case "SymbolConstant":
+					return (simbolo_objeto_estudio instanceof SymbolConstant);
+				case "SymbolVariable":
+					return (simbolo_objeto_estudio instanceof SymbolVariable);
+				case "TypeSymple":
+					return (tipo_objeto_estudio instanceof TypeSimple);
+				default:
+					return false;
+			}
+		}else{
+			manejarError(1, linea_control_error);
+			return false;
+		}
+	}
+	/* La funcion de este metodo es comprobar si dos ArrayList, los cuales, contienen parametros formales y actuales de una funcion
+	 * son iguales.
+	 *@param listado de parametros en la llamada de la funcion
+	 *@param listado de parametros formales de la funcion
+	 */
+	public boolean parametrosActuales_igual_parametrosFormales(ArrayList<String> parametros_actuales, ArrayList<String> parametros_formales){
+    	if((parametros_actuales.toString()).equalsIgnoreCase(parametros_formales.toString())){
+    		return true;
+    	}else{
+    		return false;
+    	}
+	}
+	/* Este metodo trata el limite superior e inferior en la declaracion de un tipo ARRAY
+	 * @param limite de tipo entero o identificador constante
+	 * @param linea de control por si se produce un error
+	 */
+	public String tratarLimite(EntOid limite, int linea_control){
+			if(limite.esIdentificador()){
+				if(identificadorEsInstanciaDe(limite.getValor(), "SymbolConstant", linea_control)){
+					SymbolConstant simbolo_cte = (SymbolConstant)scopeManager.searchSymbol(limite.getValor());
+   					if(simbolo_cte.esCteNumerica()){
+   						return simbolo_cte.getValor();
+   					}else{
+   						manejarError(17, linea_control);
+   						return null;
+   					}
+				}else{
+					manejarError(16,linea_control);
+					return null;
+				}
+			}else{
+				return limite.getValor();
+			}
+	}
+	/*
+	 * Con el fin de evitar duplicacion de codigo en el tratamiento de las sentencias  del cuerpo de un programa o subprograma se crea este metodo
+	 *(dado que son practicamente identicas para varias producciones)
+	 * @param listado de sentencias
+	 * @param linea de control por si se produce error
+	 */
+	public Sentencias manejarSentencias(ListSentencia listado_sentencias, int linea_control_error){
+	  	 Sentencias bloque_sentencias = new Sentencias();
+  		 if(listado_sentencias.existeSentenciaReturn()){
+  			 if(listado_sentencias.todosLosRetornosSonDelMismoTipo()){
+  			  	 bloque_sentencias.setTipoRetorno(listado_sentencias.obtenerTipoRetorno());
+  			  	 bloque_sentencias.retornoEncontrado();
+  			 }else{
+  			  	  manejarError(21, linea_control_error);
+  			 }
+  		 }
+	  return bloque_sentencias;
+	}
+	//*******************************
+	// METODOS DE CODIGO INTERMEDIO
+	//*******************************
+	/*
+	 * Este metodo se encarga de gestionar todas la operaciones binarias del codigo intermedio (RESTAR, MULTIPLICAR...etc).
+	 *@param ambito desde el cual se ha invocado la operacion binaria
+	 *@param expresion izquierda de la operacion binaria
+	 *@param expresion derecha de la operancion binaria
+	 *@param cadena de texto indicativa del tipo operacion binaria a realizar
+	 *@param Expresion aritmetica (en caso de ser una operacion binaria aritmetica se alteran atributos de este objeto, lo cual, repercute en el objeto ExprArit recibido como parametro actual
+	 *@param Expresion logica (en caso de ser una operacion logica se alteran atributos de este objeto repercutiendo en parametro actual asociado. Sera null en caso de que no sea una operacion aritmetica
+	 */
+	public void gestionarOperacionBinariaCI(ScopeIF ambito, Expresion expresion_izq, Expresion expresion_der, String tipoOperacion, ExprArit exp_arit, ExprLogica exp_logic ){
+  		TemporalFactory factoria_temporales = new TemporalFactory(ambito);
+  	    IntermediateCodeBuilder factoria_intermedio = new IntermediateCodeBuilder(ambito);
+  	    TemporalIF temporal_expresion_izq = expresion_izq.getTemporal();
+		TemporalIF temporal_expresion_der = expresion_der.getTemporal();
+  	    TemporalIF temporal_resultado_op = factoria_temporales.create();
+  	    factoria_intermedio.addQuadruples(expresion_izq.getIntermediateCode());
+  	    factoria_intermedio.addQuadruples(expresion_der.getIntermediateCode());
+  	    boolean codigoIntermedioAritmetico = false; //se parte de la premisa de que el codigo intermedio no es aritmetico
+  	   	switch(tipoOperacion){
+  	   		case "RESTAR":
+				factoria_intermedio.addQuadruple("SUB", temporal_resultado_op, temporal_expresion_izq, temporal_expresion_der);
+				codigoIntermedioAritmetico = true;
+				break;
+			case "MULTIPLICAR":
+			    factoria_intermedio.addQuadruple("MUL", temporal_resultado_op, temporal_expresion_izq, temporal_expresion_der);
+			    codigoIntermedioAritmetico = true;
+				break;
+			case "MAYOR":
+			    factoria_intermedio.addQuadruple("GR", temporal_resultado_op, temporal_expresion_izq, temporal_expresion_der);
+				break;
+			case "IGUAL":
+			    factoria_intermedio.addQuadruple("EQ", temporal_resultado_op, temporal_expresion_izq, temporal_expresion_der);
+				break;
+			case "OR":
+			    factoria_intermedio.addQuadruple("OR", temporal_resultado_op, temporal_expresion_izq, temporal_expresion_der);
+				break;
+			default:
+  	   	}
+  	   	if(exp_arit != null &&  codigoIntermedioAritmetico){  //Se establece doble control (aunque no sea necesario) para garantizar seguridad
+  	   		exp_arit.setIntermediateCode(factoria_intermedio.create());
+  	   		exp_arit.setTemporal(temporal_resultado_op);
+  	   	}else if(exp_logic != null && !codigoIntermedioAritmetico){
+  	   		exp_logic.setIntermediateCode(factoria_intermedio.create());
+  	   		exp_logic.setTemporal(temporal_resultado_op);
+  	   	}
+  	}
+:}
+//====================================================
+// FIN ACTION CODE DEL PARSER
+//====================================================
+parser code {:
+	SyntaxErrorManager syntaxErrorManager = CompilerContext.getSyntaxErrorManager();
+
+	public void syntax_error(Symbol symbol)
+	{
+	    Token token = (Token) symbol.value;
+	    syntaxErrorManager.syntaxError ("Error sintactico", token);
+	}
+
+	public void unrecovered_syntax_error(java_cup.runtime.Symbol symbol)
+	{
+	    Token token = (Token) symbol.value;
+	    syntaxErrorManager.syntaxFatalError ("Error fatal", token);
+	}
+:}
+
+
+//===========================
+// Declaracion de terminales
+//===========================
+terminal Token IDENTIFICADOR;
+terminal Token INTEGER, BOOLEAN, STRING;
+terminal Token ARRAY, OF;
+terminal Token MODULE, BEGIN, END, PROCEDURE, RETURN;
+terminal Token OR, NOT;
+terminal Token CONST, TYPE, VAR;
+terminal Token IF, ELSE, THEN, DO, FOR, TO;
+terminal Token WRITESTRING, WRITEINT, WRITELN;
+
+terminal Token PARENIZQ, PARENDER, CORCHIZQ, CORCHDER;
+terminal Token PUNTOPUNTO, COMA, PUNTOYCOMA, DOSPUNTOS, IGUAL;
+terminal Token MINUS, PRODUCTO, MAYOR;
+terminal Token DOSPUNTOSIGUAL;
+
+terminal Token ENTERO;
+terminal Token TRUE, FALSE;
+
+//==============================
+// Declaracion de no terminales
+//===============================
+non terminal                      program;
+non terminal Axiom		          axiom;
+
+non terminal CabModule            cabModule;
+non terminal Cuerpo               cuerpo;
+
+non terminal StmConstantes        stmConstantes;
+non terminal StmTipos             stmTipos;
+non terminal StmVar               stmVar;
+non terminal StmSubprogram        stmSubprogram;
+
+non terminal SentConst            sentConst;
+non terminal ExpConst             expConst;
+non terminal ValorConst           valorConst;
+
+non terminal SentTipo             sentTipo;
+non terminal ExpTipo              expTipo;
+
+non terminal SentVar              sentVar;
+non terminal ExpVar               expVar;
+non terminal CadIdVar             cadIdVar;
+non terminal TipoVar              tipoVar;
+
+non terminal CabProcedure         cabProcedure;
+non terminal TipoRetorno          tipoRetorno;
+non terminal ProcParenParam       procParenParam;
+non terminal ProcListParam        procListParam;
+non terminal ProcParam            procParam;
+
+non terminal Sentencias           sentencias;
+non terminal ListSentencia        listSentencia;
+non terminal Sentencia            sentencia;
+
+non terminal Expresion            expresion;
+non terminal ExprArit             exprArit;
+non terminal ExprLogica           exprLogica;
+non terminal Variables            variables;
+
+non terminal SentProcedure        sentProcedure;
+non terminal ParFuncion           parFuncion;
+non terminal Parametros           parametros;
+
+non terminal SentAsign            sentAsign;
+non terminal SentReturn           sentReturn;
+non terminal SentIf               sentIf;
+non terminal SentElse             sentElse;
+non terminal SentFor              sentFor;
+
+non terminal   SWriteString       sWriteString;
+non terminal   SWriteInt          sWriteInt;
+non terminal   SWriteLn           sWriteLn;
+
+non terminal IdArray            idArray;
+non terminal IntOBool             intOBool;
+non terminal EntOid              entOid;
+non terminal VBooleano           vBooleano;
+
+
+
+// Declaracon de relaciones de precedencia
+precedence nonassoc MAYOR, IGUAL;
+precedence left     MINUS, OR;
+precedence left     PRODUCTO;
+precedence right    NOT;
+
+precedence left     PARENIZQ, PARENDER, CORCHIZQ, CORCHDER;
+
+
+
+//====================================
+// Declaracion de reglas de produccion
+//====================================
+start with program;
+//===============================================
+//PRODUCCION SIN SEMANTICO --> program ::= axiom;
+//===============================================
+program ::=
+  {: syntaxErrorManager.syntaxInfo ("Starting parsing...");
+  :}
+  axiom:ax
+  {:
+  		//EN ESTA PRACTICA NO SE CONTEMPLA EL TRATAMIENTO DE SUBPROGRAMAS; SOLO SE TRABAJA CON AMBITO DE PROGRAMA PRINCIPAL
+  		ExecutionEnvironmentEns2001  entorno_ejecucion = new ExecutionEnvironmentEns2001 ();
+  		ScopeIF ambito_principal = ax.getAmbitoCentral();
+  		IntermediateCodeBuilder fabrica_intermedio = new IntermediateCodeBuilder(ambito_principal);
+
+  		int direccion_base_memoria = entorno_ejecucion.getMemorySize();                //se obtiene direccion base del entorno de ejecucion (65535)
+  		List<SymbolIF> simbolos = ambito_principal.getSymbolTable().getSymbols();      //se obtiene el listado de simbolos de todo el listado principal)
+  		for(SymbolIF simbolo: simbolos){
+  			if(simbolo instanceof SymbolVariable){
+  				((SymbolVariable)simbolo).setDireccion(direccion_base_memoria); 	   //se establece la direccion estatica de cada variable (DEL AMBITO PRINCIPAL, EL RESTO ES PARTE OBLIGATORIA)
+  				//System.out.println("Se procede a guardar en la direccion " + direccion_base_memoria + " la variable " +simbolo.getName()); //Descomentar esta linea si se quiere mas informacion de donde se guarda cada variable
+  				Variable var = new Variable(simbolo.getName(), simbolo.getScope());
+  				fabrica_intermedio.addQuadruple("INICIAR_DATOS_GLOBALES", var, 0);                //Se crea una quadrupla personalizada para inicializar valores de variables globales
+  				direccion_base_memoria = direccion_base_memoria - simbolo.getType().getSize();    //se decrementa en una unidad la direccion estatica actual
+  			}
+  		}
+
+  		List<TemporalIF> temporales = ambito_principal.getTemporalTable().getTemporals(); //mismo procedimiento que anterior pero con temporales
+  		for(TemporalIF temporal: temporales){
+  			((Temporal)temporal).setAddress(direccion_base_memoria);
+  			//System.out.println("Se procede a guardar en la direccion " + direccion_base_memoria + " el temporal "+ temporal.getName());
+  			direccion_base_memoria = direccion_base_memoria - ((Temporal)temporal).getSize();
+  		}
+  		fabrica_intermedio.addQuadruples(ax.getIntermediateCode());   //se inserta todos las quadruplas del programa principal
+  		fabrica_intermedio.addQuadruple("HALT");                      // se inserta quaudrupla de fin de programa
+  		for(int i = 0; i < listaStrings.size(); i++){				 //se inserta etiquetas que contiene datos de cadenas de texto para imprimir
+  			fabrica_intermedio.addQuadruple(listaStrings.get(i));
+  		}
+
+  		ax.setIntermediateCode(fabrica_intermedio.create());
+  		//**********************************
+  		//**** DESCOMENTAR LINEAS DE 437 A 439 SI SE QUIERE VER CODIGO INTERMEDIO Y SU EQUIVALENTE EN CODIGO FINAL EN CONSOLA DE ECLIPSE
+  		//**********************************
+  		//for(QuadrupleIF x: ax.getIntermediateCode()){
+  		//	System.out.println(entorno_ejecucion.translate(x));
+  		//}
+  		// No modificar esta estructura, aunque se pueden insertar mas acciones semanticas
+
+  		List intermediateCode = ax.getIntermediateCode ();
+  		finalCodeFactory.setEnvironment(CompilerContext.getExecutionEnvironment());
+  		finalCodeFactory.create (intermediateCode);
+
+  		// En caso de no comentarse las dos sentencias anteriores puede generar una excepcion
+  		// en las llamadas a cupTest si el compilador no esta completo. Esto es debido a que
+  		// aun no se tendra implementada la generacion de codigo intermedio ni final.
+  		// Para la entrega final deberian descomentarse y usarse.
+
+  		syntaxErrorManager.syntaxInfo ("Parsing process ended.");
+  :};
+
+//===========================================================================
+//PRODUCCION SIN SEMANTICO --> axiom :: = cabModule cuerpo | cabModule error ;
+//===========================================================================
+axiom ::=
+
+		cabModule:cabecera_modulo
+        {:
+        	//PARTE 1: CREACION DE AMBITO GLOBAL CON NOMBRE DE PROGRAMA
+	        //Abrimos un ambito, que en este contexto se trata del ambito global del programa de nivel 0
+
+	        scopeManager.openScope(cabecera_modulo.getNombreModulo());
+
+
+	        //Se instancia un objeto de tipo ambito y se le hace corresponder con el ambito actual
+	        ScopeIF scope = scopeManager.getCurrentScope();
+
+
+			//PARTE 2: INSERCION EN LA TABLA DE TIPOS LOS TIPOS PRIMITIVOS INTEGER Y BOOLEAN
+			//se obtiene la tabla_tipos del ambito actual
+			TypeTableIF tabla_tipos = scope.getTypeTable();
+
+			//Se instancia un tipo primitivo entero y un tipo primitivo logico
+			TypeSimple tipo_entero = new TypeSimple(scope, "ENTERO");
+			TypeSimple tipo_logico = new TypeSimple(scope, "LOGICO");
+
+			//Se insertan los tipos declarados previamente en la tabla de tipos del ambito global
+			tabla_tipos.addType("ENTERO", tipo_entero);
+			tabla_tipos.addType("LOGICO", tipo_logico);
+
+        :}
+         cuerpo:cuerpo_programa
+        {:
+        	Axiom ax = new Axioma();
+	        ax.setAmbitoCentral(scopeManager.getCurrentScope()); //se propaga hacia arriba el ambito principal (es el unico que se va a traducir a codigo final)
+        	//SE COMPRUEBA QUE LA ETIQUETA DESPUES DEL END COINCIDEN CON EL IDENTIFICADOR DEL PROGRAMA
+        	if(cabecera_modulo.getNombreModulo().equalsIgnoreCase(cuerpo_programa.getIdentificadorFinal())){
+        		scopeManager.closeScope(); //Cerramos el ambito global, (el primero creado), dado que tras compilar el cuerpo, se ha acabado el programa.
+        	}else{
+        		manejarError(3, cuerpo_programa.getNumLineaIdFin());
+        	}
+        	ax.setIntermediateCode(cuerpo_programa.getIntermediateCode()); //Se propaga hacia arriba el codigo intermedio del cuerpo del programa PRINCIPAL
+        	RESULT = ax;
+        :}
+                | cabModule error   ;
+
+
+// Cabecera de los modulos
+//==========================================================================================
+//PRODUCCION SIN SEMANTICO --> cabModule ::= MODULE IDENTIFICADOR PUNTOYCOMA | MODULE error;
+//==========================================================================================
+cabModule     ::= MODULE IDENTIFICADOR:id PUNTOYCOMA
+                  {:
+                  	String nombre_programa = id.getLexema(); //Obtenemos el nombre del programa
+                  	CabModule cabecera_modulo = new CabModule(); //Instanciamos un objeto de tipo cabecera de modulo
+                  	cabecera_modulo.setNombreModulo(nombre_programa); //Asignamos a ese objeto de tipo cabecera de modulo un nombre
+                  	RESULT = cabecera_modulo; //Se propaga hacia arriba el objeto previamente creado con el atributo nombre_programa.
+                  :}
+                | MODULE error
+                      ;
+
+// Cuerpo de los modulos y comun para procedimientos y funciones
+//===================================================================================================================================
+//PRODUCCION SIN SEMANTICO --> cuerpo ::= stmConstantes stmTipos stmVar stmSubProgram BEGIN sentencias END IDENTIFICADOR PUNTOYCOMA
+//                                       | stmConstantes stmTipos stmVar stmSubprogram BEGIN sentencias END error
+//                                       | stmConstantes stmTipos stmVar stmSubprogram BEGIN error;
+//===================================================================================================================================
+
+cuerpo        ::= stmConstantes stmTipos stmVar stmSubprogram BEGIN sentencias:lista_sentencias END:control_linea IDENTIFICADOR:id_fin_cuerpo PUNTOYCOMA
+                  {:
+                  	Cuerpo cuerpo_programa = new Cuerpo();
+                  	cuerpo_programa.setIdentificadorFinal(id_fin_cuerpo.getLexema());
+                  	cuerpo_programa.setNumLineaIdFin(id_fin_cuerpo.getLine());
+                  	if(lista_sentencias.existeSentenciaReturn()){
+                  		cuerpo_programa.sentenciaReturnEncontrada();
+                  		cuerpo_programa.setTipoRetorno(lista_sentencias.getTipoRetorno());
+                  	}
+                  	//**********************************CODIGO INTERMEDIO************************************
+                  	cuerpo_programa.setIntermediateCode(lista_sentencias.getIntermediateCode());
+                  	//***************************************************************************************
+                    RESULT = cuerpo_programa;
+                  :}
+                | stmConstantes stmTipos stmVar stmSubprogram BEGIN sentencias END error
+
+                | stmConstantes stmTipos stmVar stmSubprogram BEGIN error
+                      ;
+
+//---------------------------------------------->>Reglas de produccion para constantes<<--------------------------------------------
+//=======================================================================================
+//PRODUCION SIN SEMANTICA --> stmConstantes ::= CONST sentConst | epsilon | CONST error;
+//=======================================================================================
+stmConstantes ::= CONST sentConst |
+       //epsilon
+       |CONST error  ;
+
+//=========================================================================
+//PRODUCCION SIN SEMANTICO --> sentConst ::= sentConst expConst | expConst;
+//=========================================================================
+sentConst     ::= sentConst expConst | expConst ;
+
+//===================================================================================================================
+//PRODUCCION SIN SEMANTICA --> expConst ::= IDENFICADOR IGUAL valorConst PUNTOYCOMA | IDENTIFICADOR error PUNTOYCOMA;
+//===================================================================================================================
+expConst      ::= IDENTIFICADOR:id_cte IGUAL valorConst:valor_cte PUNTOYCOMA
+                    {:
+                    	//Se instancia el ambito actual y su tabla de simbolos asociada para aumentar la legibilidad del codigo
+                    	ScopeIF ambito_actual = scopeManager.getCurrentScope();
+                    	SymbolTableIF tabla_simbolos = ambito_actual.getSymbolTable();
+
+
+                    	if(tabla_simbolos.containsSymbol(id_cte.getLexema())){          //Se comprueba si la cte ha sido previamente declarada en el mismo ambito.
+                    		manejarError(13,id_cte.getLine());                          //En caso afirmativo se informa de error
+                    	}else{                                                          //En caso negativo se inicia el procedimiento para crear un simbolo constante
+	                    	String tipo_cte = valor_cte.getTipoConstante();
+	                    	String valor = valor_cte.getValorConstante();               //se instancia tipo_cte y valor para aumentar legibilidad de codigo
+
+	                    	//El tipo de constante tiene que estar en la tabla de simbolos, cabiendo indicar que tipo_cte solo puede tener valor LOGICO o ENTERO
+	                    	TypeIF tipo_dato = scopeManager.searchType(tipo_cte);;
+	                    	SymbolConstant nueva_cte = new SymbolConstant(ambito_actual, id_cte.getLexema(), tipo_dato ,valor); //Se crear un objeto de tipo simbolo y se inserta en la tabla de simbolos del ambito actual
+	                    	tabla_simbolos.addSymbol(nueva_cte);
+	                    }
+                    :}
+                | IDENTIFICADOR error PUNTOYCOMA
+                      ;
+//===============================================================
+//PRODUCCION SIN SEMANTICO --> valorConst ::= ENTERO | vBooleano;
+//===============================================================
+valorConst    ::= ENTERO:entero
+					{:
+					    //para aumentar legibilidad de codigo se instancian de manera explicita el tipo de constante y su valor literal asociado
+					   	String tipo_cte = "ENTERO";
+					   	String valor = entero.getLexema();
+
+					   	// Se instancia un objeto de la clase ValorConst cuyo fin es propagar hacia arriba tipo de cte y el valor declarado
+						ValorConst cte_entera = new ValorConst(tipo_cte, valor);
+						RESULT = cte_entera;
+					:}
+
+                | vBooleano:valor_logico
+
+                {:
+                	//para aumentar legibilidad de codigo se instancian de manera explicita el tipo de constante y su valor literal asociado
+                	String tipo_cte = "LOGICO";
+                	String valor = valor_logico.obtenerValorLogico();
+
+                	// Se instancia un objeto de la clase ValorConst cuyo fin es propagar hacia arriba tipo de cte y el valor declarado
+                	ValorConst cte_logica = new ValorConst(tipo_cte,valor);
+                	RESULT = cte_logica;
+                :} ;
+
+// Reglas de produccion para Tipos
+//=================================================================================
+//PRODUCCION SIN SEMANTICO --> stmTipos ::= TYPE sentTipo | //epsilon | TYPE error;
+//=================================================================================
+stmTipos      ::= TYPE sentTipo
+
+                | // epsilon
+                | TYPE error
+                      ;
+//========================================================
+//PRODUCCION SIN SEMANTICO --> sentTipo expTipo | expTipo;
+//========================================================
+sentTipo      ::= sentTipo expTipo
+
+                | expTipo
+                      ;
+//=====================================================================================================================================================================
+//PRODUCION SIN SEMANTICA expTipo ::= IDENTIFICADOR IGUAl ARRAY CORCHIZQ entOid PUNTOPUNTO entOid CORCHDER OF intOBool PUNTO Y COMA | IDENTIFICADOR error PUNTO Y COMA;
+//====================================================================================================================================================================
+expTipo       ::= IDENTIFICADOR:id_tipo IGUAL ARRAY CORCHIZQ entOid:limite_inf PUNTOPUNTO entOid:limite_sup CORCHDER OF intOBool:tipo_vector PUNTOYCOMA
+   {:
+
+	ScopeIF ambito_actual = scopeManager.getCurrentScope();
+	TypeTableIF tabla_tipos = ambito_actual.getTypeTable();
+	SymbolTableIF tabla_simbolos = ambito_actual.getSymbolTable();
+	if(scopeManager.containsType(id_tipo.getLexema())){
+		manejarError(4, id_tipo.getLine());
+	}else{
+		TypeArray nuevo_vector = new TypeArray(ambito_actual, id_tipo.getLexema(), tipo_vector.getTipo());
+		String limite_inferior = tratarLimite(limite_inf, id_tipo.getLine());
+		String limite_superior = tratarLimite(limite_sup, id_tipo.getLine());
+		nuevo_vector.setLimiteInferior(limite_inferior);
+		nuevo_vector.setLimiteSuperior(limite_superior);
+   	    if(nuevo_vector.getLongitud() > 0){ // Se comprueba que la longitud del vector es legitima
+   	    	tabla_tipos.addType(nuevo_vector);
+   	    }else{
+   	   		manejarError(18, id_tipo.getLine());
+   	    }
+	}
+   :}
+
+     | IDENTIFICADOR error PUNTOYCOMA
+                      ;
+
+// Reglas de produccion para Variables
+//=========================================================================
+//PRODUCCION SIN SEMANTICO --> stmVar ::= VAR sentVar | epsilon |VAR error;
+//=========================================================================
+stmVar        ::= VAR sentVar
+
+                | // epsilon
+                | VAR error
+                      ;
+//=================================================================
+//PRODUCCION SIN SEMANTICO --> sentVar ::= sentVar expVar | expVar;
+//=================================================================
+sentVar       ::= sentVar expVar
+
+                | expVar
+                      ;
+//==============================================================================
+//PRODUCCION SIN SEMANTICO --> expVar ::= cadIdVar DOSPUNTOS tipoVar PUNTOYCOMA;
+//==============================================================================
+expVar        ::= cadIdVar:cadena_variables DOSPUNTOS:info_linea tipoVar:tipo_var PUNTOYCOMA
+                 {:
+                 	ScopeIF ambito_actual = scopeManager.getCurrentScope();
+                 	TypeTableIF tabla_tipos = ambito_actual.getTypeTable();
+                 	SymbolTableIF tabla_simbolos = ambito_actual.getSymbolTable();
+					if(scopeManager.containsType(tipo_var.getTipoVar())){           //se comprueba que existe el tipo de variable utilizado (boolean, integer o vectores personalizados)
+						ArrayList<String> listado_identificadores = cadena_variables.getListadoIdentificadores();
+						for(int i = 0; i < listado_identificadores.size(); i++){
+							if(tabla_simbolos.containsSymbol(listado_identificadores.get(i))){ //si el simbolo declarado existe se lanza error por duplicacion de nombres
+								manejarError(13,info_linea.getLine());
+							}else{
+								SymbolVariable nueva_variable = new SymbolVariable(ambito_actual, listado_identificadores.get(i), scopeManager.searchType(tipo_var.getTipoVar()));
+								tabla_simbolos.addSymbol(nueva_variable);
+							}
+						}
+					}else{
+						manejarError(29,info_linea.getLine());
+					}
+
+                 :}
+                | cadIdVar error PUNTOYCOMA
+                      ;
+
+//======================================================================================
+//PRODUCCION SIN SEMANTICO --> cadIdVar ::= IDENTIFICADOR COMA cadIdVar | IDENTIFICADOR;
+//======================================================================================
+cadIdVar      ::= IDENTIFICADOR:id_var COMA cadIdVar:cadena_identificadores
+				{:
+					cadena_identificadores.insertarNuevoIdentificador(id_var.getLexema());
+					RESULT = cadena_identificadores;
+				:}
+
+
+                | IDENTIFICADOR:id_variable
+                	{:
+                		//CUANDO SE CONSTUYE UN OBJETO DE TIPO **CadIdVar** SE ENVIA COMO PARAMETRO EL PRIMER PARAMETRO
+                	    CadIdVar  identificador = new CadIdVar(id_variable.getLexema());
+                	    RESULT = identificador;
+                	:}
+
+                      ;
+//==============================================================
+//PRODUCCION SIN SEMANTICO --> tipoVar intOBool | IDENTIFICADOR;
+//==============================================================
+tipoVar       ::= intOBool:tipo_primitivo
+					{:
+						TipoVar tipo_variable = new TipoVar(tipo_primitivo.getTipo());
+						RESULT = tipo_variable;
+					:}
+
+                | IDENTIFICADOR:id_tipo
+                	{:
+                		TipoVar tipo_variable = new TipoVar(id_tipo.getLexema());
+                		RESULT = tipo_variable;
+                	:}
+                      ;
+
+// Reglas de produccion para Procedimientos y funciones
+//===========================================================================================
+//PRODUCCION SIN SEMANTICO --> stmSubprogram ::= cabProcedure cuerpo stmSubprogram | epsilon;
+//===========================================================================================
+stmSubprogram  ::= cabProcedure:cabecera_proceso
+
+                    cuerpo:cuerpo_proceso
+                   {:
+                   		//COMPROBACION DE EXISTENCIA DE LA SENTENCIA RETURN
+                   		if(cabecera_proceso.getTipoSubprogram().equalsIgnoreCase("FUNCION")){
+                   			if(cuerpo_proceso.existeReturn()){
+                   				if(cabecera_proceso.getTipoRetorno().equalsIgnoreCase(cuerpo_proceso.getTipoRetorno())){
+                   				}else{
+                   					manejarError(22, cuerpo_proceso.getNumLineaIdFin());
+                   				}
+                   			}else{
+                   				manejarError(14, cuerpo_proceso.getNumLineaIdFin());
+                   			}
+                   		}
+                   		//COMPROBACION DE CONCORDANCIA ENTRE IDENTIFICADOR DE CABECERA DE PROCESO E IDENTIFICADOR DE FINAL DE PROCESO
+                   		if(cuerpo_proceso.getIdentificadorFinal().equalsIgnoreCase(cabecera_proceso.getNombreProceso())){
+                   			scopeManager.closeScope();
+                   		}else{
+                   			manejarError(3,cuerpo_proceso.getNumLineaIdFin());
+                   		}
+
+                   :}
+                    stmSubprogram
+
+                | // epsilon
+                      ;
+//==============================================================================================================================================================
+//PRODUCCION SIN SEMANTICO --> cabProcedure ::= PROCEDURE IDENTIFICADOR procParenParam tipoRetorno PUNTOYCOMA | PROCEDURE IDENTIFICADOR error | PROCEDURE error;
+//==============================================================================================================================================================
+cabProcedure   ::= PROCEDURE IDENTIFICADOR:id_proceso
+					{:
+						scopeManager.openScope(id_proceso.getLexema());
+					:}
+
+					procParenParam:param_formarles tipoRetorno:retorno PUNTOYCOMA
+ 					{:
+
+						String nombre_proceso = id_proceso.getLexema();
+						CabProcedure cabecera_proceso = new CabProcedure(nombre_proceso);
+						ScopeIF ambito_actual = scopeManager.getCurrentScope();
+
+						//COMPROBACION DE SI ES FUNCION O DE SI ES PROCEDIMIENTO
+						TypeIF subProgram;
+						SymbolIF subProgramSimbolo;
+
+						ScopeIF ambito_nivel_superior = scopeManager.getParentScope();
+						SymbolTableIF tabla_simbolos_ambito_superior = ambito_nivel_superior.getSymbolTable();
+						TypeTableIF tabla_tipos_ambito_superior = ambito_nivel_superior.getTypeTable();
+
+						ArrayList<String> tipos_formales = param_formarles.getTiposFormarles();
+
+						// SI NO SE PUEDE HACER FUNCIONES CON EQUIVALENCIA NOMINAL A OTRAS FUNCIONES DE TODOS LOS AMBITOS ;LO MISMO CON LOS TIPOS
+						if(scopeManager.containsType(nombre_proceso) || scopeManager.containsSymbol(nombre_proceso)){
+							manejarError(13,id_proceso.getLine());
+						}else{
+							if(retorno.existeRetorno()){  // si existe retorno se crea un tipo fuction en caso negativo se crea un tipo procedure
+								cabecera_proceso.setTipoRetorno(retorno.getTipoRetorno());
+								cabecera_proceso.setTipoSubProgram("FUNCION");
+								subProgram = new TypeFunction(ambito_nivel_superior,nombre_proceso, retorno.getTipoRetorno(), tipos_formales);
+								subProgramSimbolo = new SymbolFunction(ambito_nivel_superior, nombre_proceso, subProgram,retorno.getTipoRetorno(), tipos_formales);
+							}else{
+								cabecera_proceso.setTipoSubProgram("PROCEDIMIENTO");
+								subProgram = new TypeProcedure(ambito_nivel_superior, nombre_proceso, tipos_formales);
+								subProgramSimbolo = new SymbolProcedure(ambito_nivel_superior, nombre_proceso, subProgram, tipos_formales);
+							}
+
+							if(param_formarles.existenParametrosEntrada()){
+							    //al existir parametros de entrada se deben insertar estos en la tabla de simbolos del procedimiento
+								SymbolTableIF tabla_simbolos = ambito_actual.getSymbolTable();
+							}
+							tabla_tipos_ambito_superior.addType(subProgram);
+							tabla_simbolos_ambito_superior.addSymbol(subProgramSimbolo);
+							RESULT = cabecera_proceso;
+						}
+					:}
+
+                |  PROCEDURE IDENTIFICADOR error
+
+                |  PROCEDURE error
+                      ;
+//================================================================================
+//PRODUCCION SIN SEMANTICO --> procParenParam ::= PARENIZQ procListParam PARENDER;
+//================================================================================
+procParenParam ::= PARENIZQ procListParam:listado_parametros PARENDER
+                {:
+                	ProcParenParam param_entrada = new ProcParenParam();
+                	param_entrada.setExistenParametros(listado_parametros.esVacio());
+                	param_entrada.insertarTodosParametros(listado_parametros.getListaParametrosFormales());
+                	RESULT = param_entrada;
+
+                :}
+                | //epsilon
+                {:
+                	ProcParenParam param_entrada = new ProcParenParam();
+                	param_entrada.setExistenParametros(false);
+                	RESULT = param_entrada;
+                :}
+                      ;
+//==================================================================================
+//PRODUCCION SIN SEMANTICO --> procListParam ::= procParam PUNTOYCOMA procListParam;
+//==================================================================================
+procListParam  ::= procParam:nuevo_grupo PUNTOYCOMA procListParam:grupo_anterior
+				{:
+					ProcListParam grupo_parametros;
+					if(grupo_anterior.esVacio()){
+                		grupo_parametros = new ProcListParam();
+					}else{
+						grupo_parametros = grupo_anterior;
+					}
+
+					for(int i = 0; i < nuevo_grupo.getNumParametros(); i++){
+						grupo_parametros.insertarParametroFormal(nuevo_grupo.getNombreTipo());
+					}
+					RESULT = grupo_parametros;
+				:}
+                      //HAY QUE IR ACUMULANDO NUMERO DE VARIABLES Y TIPOS
+                |  procParam:grupo_parametros
+
+                	{:
+                	    String tipo = grupo_parametros.getNombreTipo();
+                		ProcListParam grupo_param = new ProcListParam(tipo);
+
+                		//EL BUCLE EMPIEZA EN UNO PORQUE YA SE HA INSERTADO EL PRIMER TIPO PREVIAMENTE
+                		for(int i = 1; i < grupo_parametros.getNumParametros(); i++){
+                			grupo_param.insertarParametroFormal(tipo);
+                		}
+                		RESULT = grupo_param;
+                	:}
+
+                |  // epsilon
+
+                {:
+                    ProcListParam vacio = new ProcListParam(); //un constructor de **ProcListParam()** sin para parametros indica que no hay parametros formales
+                	RESULT = vacio;
+                :} ;
+//======================================================================
+//PRODUCCION SIN SEMANTICO --> procParam ::= cadIdVar DOSPUNTOS tipoVar;
+//======================================================================
+procParam      ::= cadIdVar:cadena_ids DOSPUNTOS:control_linea tipoVar:tipo
+				{:
+					//se comprueba que los tipos declarados como parametros de subprograma son legitimos y han sido declarados previamente
+					if(tipo.getTipoVar().equalsIgnoreCase("LOGICO") || tipo.getTipoVar().equalsIgnoreCase("ENTERO")){
+						ScopeIF ambito_actual = scopeManager.getCurrentScope();
+						SymbolTableIF tabla_simbolos = ambito_actual.getSymbolTable();
+						ArrayList<String> listado_ids = cadena_ids.getListadoIdentificadores();
+						TypeIF tipo_asociado = scopeManager.searchType(tipo.getTipoVar());
+						ProcParam param_agrupados_tipo = new ProcParam();
+						param_agrupados_tipo.setNombreTipo(tipo.getTipoVar());
+						for(int i = 0; i < listado_ids.size(); i++){
+
+							//SE COMPRUEBA SI SE HAN INSERTADOS DOS VARIABLES IGUALES EN CABECERA DE PROCEDIMIENTO O FUNCION
+							if(tabla_simbolos.containsSymbol(listado_ids.get(i))){
+								manejarError(11,control_linea.getLine());
+							}else{
+								SymbolIF variable_nueva = new SymbolVariable(ambito_actual, listado_ids.get(i), tipo_asociado);
+							    tabla_simbolos.addSymbol(listado_ids.get(i), variable_nueva);
+							    param_agrupados_tipo.incrementarNumParametros();
+							}
+						}
+						//PROPAGACION HACIA ARRIBA DEL ATRIBUTO (NUMERO DE ATRIBUTOS Y TIPO DE DE UN GRUPO DE ATRIBUTOS)
+						RESULT = param_agrupados_tipo;
+					}else{
+						manejarError(12,control_linea.getLine());
+					}
+				:}
+                |  cadIdVar error PUNTOYCOMA
+                      ;
+//=========================================================================================================
+//PRODUCCION SIN SEMANTICO --> tipoRetorno ::= DOSPUNTOS intOBool | //epsilon | DOSPUNTOS error PUNTOYCOMA;
+//=========================================================================================================
+tipoRetorno    ::= DOSPUNTOS intOBool:primitivo
+					{:
+						TipoRetorno tipo_retorno = new TipoRetorno(primitivo.getTipo());
+						RESULT = tipo_retorno;
+					:}
+
+                |  // epsilon
+                	{:
+                		TipoRetorno tipo_retorno = new TipoRetorno("NO_RETORNO");
+						RESULT = tipo_retorno;
+                	:}
+                |  DOSPUNTOS error PUNTOYCOMA
+                      ;
+
+/////==============================================================================================================/////
+///// ================================ SECCION DE INSTRUCCIONES ===================================================/////
+/////==============================================================================================================/////
+//PENDIENTE: CONTINUAR POR AQUI COMENTANDO
+// expresion logicas y aritmeticas.
+//===========================================================================================================
+//PRODUCCION SIN SEMANTICO --> expresion ::= exprArit | exprLogica | PARENIZQ expresion PARENDER | variables;
+//===========================================================================================================
+expresion     ::= exprArit:exp_arit
+				//Instanciacion de clase expresion aritmetica
+				{:
+					Expresion expresion_aritmetica = new Expresion();
+					expresion_aritmetica.setEsLogica(false);
+					expresion_aritmetica.setTipoExpresion("ENTERO");
+					//PARA CONTROLAR ACCESO A VECTORES CON NUMEROS
+					if(exp_arit.esUnNumeroSimple()){
+						expresion_aritmetica.setValorNumericoSimple(exp_arit.getValorNumericoSimple());
+					}
+
+					//*******************CODIGO INTERMEDIO**********************************
+					expresion_aritmetica.setIntermediateCode(exp_arit.getIntermediateCode());
+					expresion_aritmetica.setTemporal(exp_arit.getTemporal());
+					//***********************************************************
+					RESULT = expresion_aritmetica;
+				:}
+ 			    | exprLogica:exp_logic
+
+                 //Instanciacion de clase expresion logica
+                 {:
+                 	Expresion expresion_logica = new Expresion();
+                 	expresion_logica.setEsLogica(true);
+                 	expresion_logica.setIntermediateCode(exp_logic.getIntermediateCode());
+                 	expresion_logica.setTemporal(exp_logic.getTemporal());
+                 	RESULT = expresion_logica;
+                 :}
+
+                | PARENIZQ expresion:exp PARENDER
+
+                   //Instanciacion de clase expresion generica (no se sabe si es logica o aritmetica)
+                   {:
+                    RESULT = exp; //se devuelve la expresion contenida dentro de la expresion
+                   :}
+                | variables:expresion_variable
+                {:
+                	String id_var = expresion_variable.getIdentificador();
+                	Expresion nueva_expresion = new Expresion();
+                	//TANTO SI LA VARIABLE ES DE TIPO REFERENCIA SIMPLE, COMO DE VECTOR O FUNCION, EN ULTIMA INSTANCIA SERA, O UN ENTERO, O UN LOGICO Y DEPENDIENDO DE ESE VALOR LA EXPRESION SERA LOGICA O NO
+                    if(expresion_variable.getTipo().equalsIgnoreCase("LOGICO")){
+                    	nueva_expresion.setEsLogica(true);
+                    }else{
+                    	nueva_expresion.setEsLogica(false);
+                    	//EN CASO DE NO SER LOGICA PUEDE SER REFERENCIA A VECTOR O A UN NUMERO ENTERO
+                    	nueva_expresion.setTipoExpresion(expresion_variable.getTipo());
+                    }
+                    //EL ACCESO A POSICION DE VECTOR CON UNA EXPRESION CONSTANTE DEBE SER CONTROLADO EN EL SEMANTICO EN CUANTO A QUE NO EXCEDA LIMITE
+                    if(expresion_variable.esReferenciaConstante()){
+                    	nueva_expresion.setEsExpresionConstante(true);
+                    	nueva_expresion.setValorExpresionConstante(expresion_variable.getValorReferenciaConstante());
+                    }
+                    //***************************************CODIGO INTERMEDIO***************************************************
+                    ScopeIF ambito_actual = scopeManager.getCurrentScope();
+                    TemporalFactory creador_temporales = new TemporalFactory(ambito_actual);
+                    IntermediateCodeBuilder factoria_intermedio = new IntermediateCodeBuilder(ambito_actual);
+                    TemporalIF temp_resultadoExpresion = creador_temporales.create();
+                    if(expresion_variable.esReferenciaConstante()){
+                    	Value valor_cte;
+                    	if(expresion_variable.esConstanteNumerica()){
+                    		valor_cte = new Value(Integer.parseInt(expresion_variable.getValorReferenciaConstante()));
+                    	}else{
+                    		int valor_booleano_numerico = (expresion_variable.getValorReferenciaConstante().equalsIgnoreCase("true"))? 1:0;
+                    		valor_cte = new Value(valor_booleano_numerico);
+                    	}
+                    	factoria_intermedio.addQuadruple("MV", temp_resultadoExpresion, valor_cte);
+
+                    //EN CASO DE QUE NO SEA CONSTANTE SI ES UNA REFERENCIA SIMPLE SOLO QUEDA QUE SEA UNA VARIABLE
+                    }else if(expresion_variable.getTipoReferencia().equalsIgnoreCase("REFERENCIA_SIMPLE") ){
+                    	SymbolVariable simbolo_variable = (SymbolVariable)scopeManager.searchSymbol(expresion_variable.getIdentificador());
+                    	Variable var = new Variable(expresion_variable.getIdentificador(), simbolo_variable.getScope());
+                    	TemporalIF direccionVariable = creador_temporales.create();
+                    	factoria_intermedio.addQuadruple("MVA", direccionVariable, var);
+                    	factoria_intermedio.addQuadruple("MVP",temp_resultadoExpresion, direccionVariable);
+                    }else if(expresion_variable.getTipoReferencia().equalsIgnoreCase("REFERENCIA_VECTOR")){
+
+                    	nueva_expresion.marcarComoReferenciaAVector();
+                    	TemporalIF direccionVector = expresion_variable.getTemporal();
+                       	factoria_intermedio.addQuadruples(expresion_variable.getIntermediateCode());
+                       	factoria_intermedio.addQuadruple("MVP", temp_resultadoExpresion,direccionVector);
+                    }
+					nueva_expresion.setTemporal(temp_resultadoExpresion);
+					nueva_expresion.setIntermediateCode(factoria_intermedio.create());
+                    //*******************************************************************************************************************
+                	RESULT = nueva_expresion;
+                :}
+                      ;
+
+// Reglas de produccion para expresiones aritmeticas.
+//===========================================================================================================
+//PRODUCCION SIN SEMANTICO --> exprArit ::= expresion MINUS expresion | expresion PRODUCTO expresion |ENTERO;
+//===========================================================================================================
+exprArit      ::= expresion:exp_izquierda MINUS:control_linea expresion:exp_derecha
+                      {:
+                      	if(!exp_izquierda.getTipoExpresion().equalsIgnoreCase("ENTERO") && !exp_derecha.getTipoExpresion().equalsIgnoreCase("ENTERO")){
+                      		manejarError(26,control_linea.getLine());
+                      	}
+                    	ExprArit expre_arit = new ExprArit();
+                      	//******************************CODIGO INTERMEDIO************************************************
+                      	gestionarOperacionBinariaCI(scopeManager.getCurrentScope(), exp_izquierda, exp_derecha, "RESTAR", expre_arit, null );
+                      	//************************************************************************************************
+                      	RESULT  = expre_arit;
+                      :}
+                | expresion:exp_izquierda PRODUCTO:control_linea expresion:exp_derecha
+                      {:
+                      	if(!exp_izquierda.getTipoExpresion().equalsIgnoreCase("ENTERO") && !exp_derecha.getTipoExpresion().equalsIgnoreCase("ENTERO")){
+                      		manejarError(26,control_linea.getLine());
+                      	}
+                      	ExprArit expre_arit = new ExprArit();
+                      	//**********************************CODIGO INTERMEDIO********************************************
+                      	gestionarOperacionBinariaCI(scopeManager.getCurrentScope(), exp_izquierda, exp_derecha, "MULTIPLICAR", expre_arit, null );
+                      	//***********************************************************************************************
+                      	RESULT  = expre_arit;
+                      :}
+                | ENTERO:numero_simple
+                	{:
+                		ExprArit valor_entero_simple = new ExprArit(numero_simple.getLexema()); //es necesario propagar valor para controlar limites de vector no excedan limites
+                		IntermediateCodeBuilder factoria_intermedio = new IntermediateCodeBuilder(scopeManager.getCurrentScope());
+                		TemporalFactory factoria_temporales = new TemporalFactory(scopeManager.getCurrentScope());
+                		TemporalIF temporal_numero = factoria_temporales.create();
+                		Value valor_numero = new Value(Integer.parseInt(numero_simple.getLexema()));
+                		factoria_intermedio.addQuadruple("MV",temporal_numero, valor_numero );
+                		valor_entero_simple.setTemporal(temporal_numero);
+                		valor_entero_simple.setIntermediateCode(factoria_intermedio.create());
+                		RESULT = valor_entero_simple;
+                	:}
+                      ;
+
+// Reglas de produccion para expresiones logicas.
+//==========================================================================================================================================
+//PRODUCCION SIN SEMANTICO --> exprLogica ::= expresion MAYOR expresion | expresion IGUAL expresion | expresion OR expresion | NOT expresion
+//==========================================================================================================================================
+exprLogica    ::= expresion:exp_izquierda MAYOR:control_linea expresion:exp_derecha
+				{:
+					if(exp_izquierda.esLogica() || exp_derecha.esLogica()){
+						manejarError(19,control_linea.getLine());
+					}
+					ExprLogica expr_logic = new ExprLogica();
+					//**********************************CODIGO INTERMEDIO********************************************
+                    gestionarOperacionBinariaCI(scopeManager.getCurrentScope(), exp_izquierda, exp_derecha, "MAYOR", null, expr_logic );
+                    //***********************************************************************************************
+                    RESULT = expr_logic;
+				:}
+
+                | expresion:exp_izquierda IGUAL:control_linea expresion:exp_derecha
+                {:
+                	if(!exp_izquierda.getTipoExpresion().equalsIgnoreCase(exp_derecha.getTipoExpresion())){
+                		manejarError(26,control_linea.getLine());
+                	}
+                	//*******************************CODIGO INTERMEDIO*************************************
+                	ExprLogica expr_logic = new ExprLogica();
+                	gestionarOperacionBinariaCI(scopeManager.getCurrentScope(), exp_izquierda, exp_derecha, "IGUAL", null, expr_logic );
+        			RESULT = expr_logic;
+                	//*************************************************************************************
+                :}
+                | expresion:exp_izquierda OR:control_linea expresion:exp_derecha
+                {:
+                	if(!exp_izquierda.esLogica() || !exp_derecha.esLogica()){
+                		manejarError(26,control_linea.getLine());
+					}
+					//*******************************CODIGO INTERMEDIO*************************************
+                	ExprLogica expr_logic = new ExprLogica();
+                	gestionarOperacionBinariaCI(scopeManager.getCurrentScope(), exp_izquierda, exp_derecha, "OR", null, expr_logic );
+        			RESULT = expr_logic;
+                	//*************************************************************************************
+                :}
+
+                | NOT:control_linea expresion:expresion
+                {:
+                	if(!expresion.esLogica()){
+                		manejarError(26,control_linea.getLine());
+                	}
+                	//****************CODIGO INTERMEDIO******************************
+                	TemporalFactory fabrica_temporales = new TemporalFactory(scopeManager.getCurrentScope());
+                	IntermediateCodeBuilder fabrica_intermedio = new IntermediateCodeBuilder(scopeManager.getCurrentScope());
+                	TemporalIF temporal_expresion = expresion.getTemporal();
+                	TemporalIF temporal_resultadoNOT = fabrica_temporales.create();
+                	fabrica_intermedio.addQuadruples(expresion.getIntermediateCode());
+                	fabrica_intermedio.addQuadruple("NOT",temporal_resultadoNOT, temporal_expresion);
+                	ExprLogica expr_logic = new ExprLogica();
+                	expr_logic.setTemporal(temporal_resultadoNOT);
+                	expr_logic.setIntermediateCode(fabrica_intermedio.create());
+                	RESULT = expr_logic;
+                	//***************************************************************
+                :}
+
+                | vBooleano:valor_logico
+                {:
+                	//**************************CODIGO INTERMEDIO****************
+                	int valor_logico_numerico = (valor_logico.obtenerValorLogico().equalsIgnoreCase("True")) ? 1: 0; //Se asigna valor 1 o 0 dependiendo
+                	Value valor = new Value(valor_logico_numerico);
+                	TemporalFactory fabrica_temporales = new TemporalFactory(scopeManager.getCurrentScope());
+                	IntermediateCodeBuilder fabrica_intermedio = new IntermediateCodeBuilder(scopeManager.getCurrentScope());
+                	TemporalIF temporal_logico = fabrica_temporales.create();
+                	fabrica_intermedio.addQuadruple("MV",temporal_logico, valor);
+                	ExprLogica expr_logic = new ExprLogica();
+                	expr_logic.setTemporal(temporal_logico);
+                	expr_logic.setIntermediateCode(fabrica_intermedio.create());
+                	RESULT =  expr_logic;
+                	//**********************************************
+                :}
+                      ;
+
+// Reglas para sentencias.
+//===============================================================================================
+//PRODUCCION SIN SEMANTICO --> sentencias ::= listSentencia PUNTOYCOMA | listSentencia | epsilon;
+//===============================================================================================
+sentencias    ::= listSentencia:listado_sentencias PUNTOYCOMA:linea
+                  {:
+
+              		Sentencias bloque = manejarSentencias(listado_sentencias, linea.getLine());
+              	    //*******************************************************************
+		  	 		bloque.setIntermediateCode(listado_sentencias.getIntermediateCode());
+  			  	 	//*******************************************************************
+              		RESULT =  bloque;
+                  :}
+                | listSentencia:listado_sentencias
+                {:
+
+              		Sentencias bloque = manejarSentencias(listado_sentencias, -1);
+              		//*******************************************************************
+		  	 		bloque.setIntermediateCode(listado_sentencias.getIntermediateCode());
+  			  	 	//*******************************************************************
+              		RESULT =  bloque;
+                :}
+
+                |  // epsilon
+                {:
+              		Sentencias bloque_sentencias = new Sentencias();
+              		bloque_sentencias.noExistenSentencias();
+              		RESULT = bloque_sentencias;
+                :}
+                      ;
+//==============================================================================================
+//PRODUCCION SIN SEMANTICO --> listSentencia ::= listSentencia PUNTOYCOMA sentencia | sentencia;
+//==============================================================================================
+listSentencia ::= listSentencia:listado_instrucciones PUNTOYCOMA:linea sentencia:instruccion
+                {:
+                	listado_instrucciones.insertarNuevaSentencia(instruccion);
+                	//****************************************************************************
+                	IntermediateCodeBuilder fabrica_intermedio = new IntermediateCodeBuilder(scopeManager.getCurrentScope());
+                	fabrica_intermedio.addQuadruples(listado_instrucciones.getIntermediateCode());
+                	fabrica_intermedio.addQuadruples(instruccion.getIntermediateCode());
+                	listado_instrucciones.setIntermediateCode(fabrica_intermedio.create());
+                	//**************************************************************************
+                	//CONTINAR AQUI PROPAGAR LINEA
+          			RESULT = listado_instrucciones;
+                :}
+                | sentencia:instruccion
+                {:
+                	ListSentencia sentencia_simple = new ListSentencia(instruccion);
+                	//************************************************************************
+                	sentencia_simple.setIntermediateCode(instruccion.getIntermediateCode());
+                	//************************************************************************
+                	RESULT = sentencia_simple;
+
+                :}
+                      ;
+//===========================================================================================================================================
+//PRODUCCION SIN SEMANTICO --> sentencia ::= sentAsign | sentIf | sentFor | sentReturn | sWriteString | sWriteInt | sWriteLn | sentProcedure;
+//===========================================================================================================================================
+sentencia     ::= sentAsign:asignacion
+				{:
+					Sentencia instruccion = new Sentencia("SENTENCIA_ASIGNACION");
+					instruccion.setIntermediateCode(asignacion.getIntermediateCode());
+					RESULT = instruccion;
+
+				:}
+
+                | sentIf:sentencia_if
+                {:
+					Sentencia instruccion = new Sentencia("SENTENCIA_IF");
+					instruccion.setIntermediateCode(sentencia_if.getIntermediateCode());
+					if(sentencia_if.contieneRetorno()){
+						instruccion.marcarRetornoInterno();
+					}
+					RESULT = instruccion;
+
+				:}
+
+                | sentFor:sentencia_for
+                {:
+					Sentencia instruccion = new Sentencia("SENTENCIA_FOR");
+					instruccion.setIntermediateCode(sentencia_for.getIntermediateCode());
+					RESULT = instruccion;
+				:}
+
+                | sentReturn:retorno
+                {:
+					Sentencia instruccion = new Sentencia("SENTENCIA_RETURN");
+					instruccion.setIntermediateCode(retorno.getIntermediateCode());
+					instruccion.setTipoRetorno(retorno.getTipoRetorno());
+					RESULT = instruccion;
+
+				:}
+
+                | sWriteString:impresion_texto
+                {:
+					Sentencia instruccion = new Sentencia("SENTENCIA_WRITE_STRING");
+					instruccion.setIntermediateCode(impresion_texto.getIntermediateCode());
+					RESULT = instruccion;
+
+				:}
+
+                | sWriteInt:impresion_entero
+                {:
+					Sentencia instruccion = new Sentencia("SENTENCIA_WRITE_ENTERO");
+					instruccion.setIntermediateCode(impresion_entero.getIntermediateCode());
+					RESULT = instruccion;
+
+				:}
+
+                | sWriteLn
+                {:
+					Sentencia instruccion = new Sentencia("SENTENCIA_SALTO_LINEA");
+					IntermediateCodeBuilder fabrica_intermedio = new IntermediateCodeBuilder(scopeManager.getCurrentScope());
+					fabrica_intermedio.addQuadruple("WRITELN");
+					instruccion.setIntermediateCode(fabrica_intermedio.create());
+					RESULT = instruccion;
+
+				:}
+
+                | sentProcedure
+                {:
+					Sentencia instruccion = new Sentencia("SENTENCIA_PROCEDIMIENTO");
+					RESULT = instruccion;
+				:}
+                      ;
+
+// Sentencias Return
+//=======================================================================================
+//PRODUCCION SIN SEMANTICO --> sentReturn ::= RETURN expresion | RETURN error PUNTOYCOMA;
+//=======================================================================================
+sentReturn     ::= RETURN:control_linea expresion:expresion_retorno
+				{:
+
+					if(expresion_retorno.getTipoExpresion().equalsIgnoreCase("ENTERO") || expresion_retorno.getTipoExpresion().equalsIgnoreCase("LOGICO")){
+						SentReturn sentencia_return = new SentReturn();
+						sentencia_return.setTipoRetorno(expresion_retorno.getTipoExpresion()); //CONTINUAR AQUI
+						RESULT = sentencia_return;
+					}else{
+						manejarError(20,control_linea.getLine());
+					}
+
+				:}
+
+                |  RETURN error PUNTOYCOMA
+                      ;
+
+// Sentencias de Asignacion
+//===========================================================================================================
+//PRODUCCION SIN SEMANTICO --> sentAsign ::= variables DOSPUNTOSIGUAL expresion | variables error PUNTOYCOMA;
+//===========================================================================================================
+sentAsign     ::= variables:referencia DOSPUNTOSIGUAL:linea expresion:expre
+				{:
+					//EN EL NO TERMINAL **Variables** SE DELEGA LA RESPONSABILIDAD DE SABER SI EL SIMBOLO EXISTE
+					SymbolIF simbolo_referenciado = scopeManager.searchSymbol(referencia.getIdentificador());
+					//SE COMPRUEBA QUE EN EL LADO DERECHO DE LA SENTENCIA DE ASIGNACION SOLO SE HACE REFERENCIA A LA POSICION DE UN VECTOR O A UNA VARIABLE SIMPLE QUE NO SEA CONSTANTE
+					if((simbolo_referenciado.getType() instanceof TypeSimple || (referencia.getTipoReferencia().equalsIgnoreCase("REFERENCIA_VECTOR"))) && !(simbolo_referenciado instanceof SymbolConstant)){
+
+						//SE COMPRUEBA COINCIDENCIA QUE TANTO REFERENCIA DE LA DERECHA COMO EXPRESION DE LA IZQUIERDA SON DEL MISMO TIPO, EN CASO DE QUE ESTO NO OCURRA SE MANEJA UN ERROR Y TERMINA EL SEMANTICO
+						if(!(expre.esLogica() && referencia.getTipo().equalsIgnoreCase("LOGICO")) && !(expre.getTipoExpresion().equalsIgnoreCase("ENTERO") && referencia.getTipo().equalsIgnoreCase("ENTERO") )){
+							manejarError(27,linea.getLine());
+						}
+					}else{
+						manejarError(5,linea.getLine());
+					}
+					//********************CODIGO INTERMEDIO***************************************************************
+					SentAsign sentencia_asignacion = new SentAsign();
+					TemporalFactoryIF factoria_temporales = new TemporalFactory(scopeManager.getCurrentScope());
+					IntermediateCodeBuilder factoria_intermedio = new IntermediateCodeBuilder(scopeManager.getCurrentScope());
+					TemporalIF temporal_expresion = expre.getTemporal();
+					TemporalIF temporal_referencia = factoria_temporales.create();
+
+					//Se insertan las cuadruplas del lado derecho de la sentencia de asignacion
+					factoria_intermedio.addQuadruples(expre.getIntermediateCode());
+
+					//UNA REFERENCIA SIMPLE PUEDE SER O CONSTANTE O VARIABLE, EL ANALISIS SEMANTICO IMPIDE QUE EN ESTE PUNTO SE TRATE DE UNA CONSTANTE
+					if(referencia.getTipoReferencia().equalsIgnoreCase("REFERENCIA_SIMPLE")){
+						Variable var = new Variable(referencia.getIdentificador(), scopeManager.searchSymbol(referencia.getIdentificador()).getScope());
+						factoria_intermedio.addQuadruple("MVA", temporal_referencia, var);
+						factoria_intermedio.addQuadruple("STP", temporal_referencia, temporal_expresion);
+						sentencia_asignacion.setIntermediateCode(factoria_intermedio.create());
+					}else if(referencia.getTipoReferencia().equalsIgnoreCase("REFERENCIA_VECTOR")){
+						factoria_intermedio.addQuadruples(referencia.getIntermediateCode());
+						TemporalIF temp_direccionIndicadaVector = referencia.getTemporal();
+						factoria_intermedio.addQuadruple("STP", temp_direccionIndicadaVector, temporal_expresion);
+						sentencia_asignacion.setIntermediateCode(factoria_intermedio.create());
+					}
+					//***************************************************************************************************
+					RESULT = sentencia_asignacion;
+			:}
+
+
+                | variables error PUNTOYCOMA
+                      ;
+
+// Sentencia IF-ELSE
+//=============================================================================================================================
+//PRODUCCION SIN SEMANTICO --> sentIF ::= IF expresion THEN sentencias sentElse END | IF expresion error | IF error PUNTOYCOMA;
+//=============================================================================================================================
+sentIf        ::= IF:control_linea expresion:condicion THEN sentencias:sentencias_if sentElse:sentencias_else END
+				{:
+					if(!condicion.esLogica()){
+						manejarError(15,control_linea.getLine());
+					}
+					//EL SIGUIENTE CODIGO SOLO SERA UTILIZADO EN CASO DE QUE EN SENTENCIA EXTERNAS A ESTE IF-ELSE NO EXISTA SENTENCIA RETURN
+					boolean retornoValido = (sentencias_if.existeSentenciaReturn() && (sentencias_else.existeElse() && sentencias_else.existeRetorno()));
+					SentIf sentenciaIF = new SentIf();
+					if(retornoValido){
+						sentenciaIF.marcarExistenciaRetorno();
+					}
+					//*************************CODIGO INTERMEDIO************************
+					LabelFactory fabrica_etiquetas = new LabelFactory();
+					LabelIF etiquetaFinIF = fabrica_etiquetas.create();
+					LabelIF etiquetaElse = fabrica_etiquetas.create();
+					TemporalIF temp_expresion = condicion.getTemporal();
+					IntermediateCodeBuilder fabrica_intermedio = new IntermediateCodeBuilder(scopeManager.getCurrentScope());
+					fabrica_intermedio.addQuadruples(condicion.getIntermediateCode());
+					fabrica_intermedio.addQuadruple("BRF", temp_expresion, etiquetaElse);
+					fabrica_intermedio.addQuadruples(sentencias_if.getIntermediateCode());
+					fabrica_intermedio.addQuadruple("BR",etiquetaFinIF);
+					fabrica_intermedio.addQuadruple("INL", etiquetaElse);
+					if(sentencias_else.existeElse()){
+						fabrica_intermedio.addQuadruples(sentencias_else.getIntermediateCode());
+					}else{
+						fabrica_intermedio.addQuadruple("NOP");
+					}
+					fabrica_intermedio.addQuadruple("INLFIN", etiquetaFinIF);
+					sentenciaIF.setIntermediateCode(fabrica_intermedio.create());
+					//*****************************************************************
+					RESULT = sentenciaIF;
+				:}
+
+                | IF expresion error
+
+                | IF error PUNTOYCOMA
+		;
+//====================================================================
+//PRODUCCION SIN SEMANTICO --> sentElse ::= ELSE sentencias | epsilon;
+//====================================================================
+sentElse      ::= ELSE sentencias:instrucciones
+                {:
+                	SentElse sentencia_else = new SentElse();
+                	if(instrucciones.existeSentenciaReturn()){
+                		sentencia_else.retornoEncontrado();
+                	}
+                	sentencia_else.setIntermediateCode(instrucciones.getIntermediateCode());
+                	RESULT = sentencia_else;
+                :}
+                |
+                {:
+                	SentElse sentencia_else = new SentElse();
+                	sentencia_else.marcarComoVacia();
+                	RESULT = sentencia_else;
+                :}
+                 // epsilon
+                      ;
+
+// Sentencia FOR
+//==================================================================================================================
+//PRODUCCION SIN SEMANTICO --> sentFor ::= FOR IDENTIFICADOR DOSPUNTOSIGUAL expresion TO expresion DO sentencias END
+//
+//                                       | FOR IDENTIFICADOR DOSPUNTOSIGUAL expresion TO expresion error PUNTOYCOMA
+//
+//                                       | FOR error PUNTOYCOMA
+//                                       ;
+//==================================================================================================================
+sentFor       ::= FOR IDENTIFICADOR:id DOSPUNTOSIGUAL expresion:inicio TO expresion:fin DO sentencias:sentencias_bucle END:control_linea
+   					{:
+   						if(identificadorEsInstanciaDe(id.getLexema(), "SymbolVariable", control_linea.getLine())){
+   							if(scopeManager.searchSymbol(id.getLexema()).getType().getName().equalsIgnoreCase("ENTERO")){
+   								if((inicio.getTipoExpresion().equalsIgnoreCase("ENTERO")) || (fin.getTipoExpresion().equalsIgnoreCase("ENTERO"))){
+   									//********************** CODIGO INTERMEDIO ******************************
+   									IntermediateCodeBuilder fabrica_intermedio = new IntermediateCodeBuilder(scopeManager.getCurrentScope());
+				   					TemporalFactory fabrica_temporales = new TemporalFactory(scopeManager.getCurrentScope());
+				   					LabelFactory fabrica_etiquetas = new LabelFactory();
+				   					Variable indice_for = new Variable(id.getLexema(), scopeManager.searchSymbol(id.getLexema()).getScope());
+   									fabrica_intermedio.addQuadruples(inicio.getIntermediateCode());
+  									fabrica_intermedio.addQuadruples(fin.getIntermediateCode());
+
+   									TemporalIF temp_asignacion_inicial = inicio.getTemporal();
+   									TemporalIF temp_limiteSuperior_for = fin.getTemporal();
+   									TemporalIF temp_limiteSuperior_forPLUS1 = fabrica_temporales.create(); //EL LIMITE SUPERIOR DEBE ESTAR UNA UNIDAD INCREMENTADO PARA INCLUIR EL LIMITE SUPERIOR ORIGINAL EN LAS VUELTAS DEL FOR
+   									fabrica_intermedio.addQuadruple("ADD", temp_limiteSuperior_forPLUS1, temp_limiteSuperior_for, new Value(1)  );
+   									TemporalIF temp_direccionIndice_for = fabrica_temporales.create();
+   									TemporalIF temp_resultadoComparacionPorVuelta = fabrica_temporales.create();
+   									fabrica_intermedio.addQuadruple("MVA", temp_direccionIndice_for, indice_for);
+									fabrica_intermedio.addQuadruple("STP", temp_direccionIndice_for, temp_asignacion_inicial);
+									LabelIF inicioFor = fabrica_etiquetas.create();
+									LabelIF finFor = fabrica_etiquetas.create();
+									TemporalIF valor_actual_indiceFor = fabrica_temporales.create();
+									fabrica_intermedio.addQuadruple("INL", inicioFor);
+									fabrica_intermedio.addQuadruple("MVP", valor_actual_indiceFor, temp_direccionIndice_for);
+									fabrica_intermedio.addQuadruple("EQ", temp_resultadoComparacionPorVuelta, valor_actual_indiceFor ,temp_limiteSuperior_forPLUS1);
+									fabrica_intermedio.addQuadruple("BRT", temp_resultadoComparacionPorVuelta, finFor );
+   									fabrica_intermedio.addQuadruples(sentencias_bucle.getIntermediateCode());
+   									Value incrementoPorVuelta = new Value(1);
+									TemporalIF resultado_suma = fabrica_temporales.create();
+   									fabrica_intermedio.addQuadruple("ADD", resultado_suma ,valor_actual_indiceFor, incrementoPorVuelta);
+   									fabrica_intermedio.addQuadruple("STP",  temp_direccionIndice_for, resultado_suma);
+   									fabrica_intermedio.addQuadruple("BR", inicioFor);
+   									fabrica_intermedio.addQuadruple("INLFIN", finFor);
+   									SentFor sentencia_for = new SentFor();
+   									sentencia_for.setIntermediateCode(fabrica_intermedio.create());
+   									RESULT = sentencia_for;
+									//***********************************************************************
+   								}else{
+   									manejarError(24,control_linea.getLine());
+   								}
+   							}else{
+   								manejarError(23,control_linea.getLine());
+   							}
+   						}else{
+   							manejarError(26,control_linea.getLine());
+   						}
+   					:}
+                | FOR IDENTIFICADOR DOSPUNTOSIGUAL expresion TO expresion error PUNTOYCOMA
+
+                | FOR error PUNTOYCOMA
+                      ;
+
+// Sentencia llamada Procedimiento
+//=======================================================================================
+//PRODUCCION SIN SEMANTICO --> sentProcedure ::= IDENTIFICADOR | IDENTIFICAOR parFuncion;
+//=======================================================================================
+sentProcedure ::= IDENTIFICADOR:id_proceso
+				{:
+					if(identificadorEsInstanciaDe(id_proceso.getLexema(), "SymbolProcedure", id_proceso.getLine())){
+					    SymbolProcedure  simbolo_proceso  = (SymbolProcedure)scopeManager.searchSymbol(id_proceso.getLexema());
+					    if(simbolo_proceso.getNumParametrosFormales() != 0){
+						 	manejarError(10,id_proceso.getLine());
+					    }
+					}else{
+						manejarError(9,id_proceso.getLine());
+					}
+
+				:}
+
+                | IDENTIFICADOR:id_proceso parFuncion:parametros
+
+                {:
+                	if(identificadorEsInstanciaDe(id_proceso.getLexema(), "SymbolProcedure", id_proceso.getLine())){
+                		SymbolProcedure  simbolo_proceso  = (SymbolProcedure)scopeManager.searchSymbol(id_proceso.getLexema());
+						if(parametros.existenParametrosLlamada()){
+							if(!(parametrosActuales_igual_parametrosFormales(parametros.getListaParametrosLlamada(), simbolo_proceso.getParametrosFormales()))){
+								manejarError(2,id_proceso.getLine());
+							}
+						}else{
+							if(simbolo_proceso.getNumParametrosFormales() != 0){
+						 		manejarError(10,id_proceso.getLine());
+					   		}
+						}
+					}else{
+						manejarError(9,id_proceso.getLine());
+					}
+
+                :}
+
+                      ;
+
+// Parametros de llamada a funcion
+//=========================================================================================
+//PRODUCCION SIN SEMANTICO --> parFuncion PARENIZQ parametros PARENDER | PARENIZQ PARENDER;
+//=========================================================================================
+parFuncion    ::= PARENIZQ parametros:lista_parametros PARENDER
+				{:
+					//SE PROPAGA LA LISTA DE PARAMETROS REFERENCIADOS EN UNA LLAMADA A UNA FUNCION O A UN PROCEDIMIENTO HACIA ARRIBA DADO QUE EN ESTE PUNTO
+					//NO SE PUEDE CONTROLAR SI HAY COHERENCIA CON LOS PARAMETROS FORMALES DE LA FUNCION
+					ParFuncion llamada = new ParFuncion(lista_parametros.getListaParametros());
+					RESULT = llamada;
+				:}
+                | PARENIZQ PARENDER
+                {:
+                	//SE INVOCA UN CONSTRUCTOR EN EL QUE NO SE ENVIA NINGUNA LISTA COMO PARAMETRO, ESTE CONSTRUCTOR INDICARA QUE NO HAY PARAMETROS EN LA LLAMADA
+                	ParFuncion llamada = new ParFuncion();
+                	RESULT = llamada;
+                :}
+                | PARENIZQ error
+                      ;
+//===================================================================================
+//PRODUCCION SIN SEMANTICO --> parametros ::= parametros COMA expresion | expresion;
+//===================================================================================
+parametros    ::= parametros:lista_parametros COMA expresion:expresion
+                {:
+                    lista_parametros.insertarParametro(expresion.getTipoExpresion());
+                    RESULT = lista_parametros;
+                :}
+                | expresion:exp
+                {:
+                	Parametros lista_param = new Parametros();
+                	lista_param.insertarParametro(exp.getTipoExpresion());
+                	RESULT = lista_param;
+                :}
+                      ;
+
+// Sentencias de Salida.
+//================================================================================================
+//PRODUCCION SIN SEMANTICO --> WRITESTRING PARENIZQ STRING PARENDER | WRITESTRING error PUNTOYCOMA;
+//================================================================================================
+sWriteString  ::= WRITESTRING PARENIZQ STRING:texto PARENDER
+				{:
+					SWriteString sentencia_impresion = new SWriteString();
+				    TemporalFactory fabrica_temporales = new TemporalFactory(scopeManager.getCurrentScope());
+				    IntermediateCodeBuilder fabrica_intermedio = new IntermediateCodeBuilder(scopeManager.getCurrentScope());
+					String cadena_texto = texto.getLexema();
+					LabelFactory fabricaEtiquetas = new LabelFactory();
+					LabelIF etiqueta_texto = fabricaEtiquetas.create();
+					fabrica_intermedio.addQuadruple("ESCRIBE_TEXTO",etiqueta_texto);
+					listaStrings.add(new Quadruple("ETIQUETA", new Label(cadena_texto), etiqueta_texto));
+				    sentencia_impresion.setIntermediateCode(fabrica_intermedio.create());
+				    RESULT = sentencia_impresion;
+				:}
+
+                | WRITESTRING error PUNTOYCOMA
+                      ;
+//==============================================================================================
+//PRODUCCION SIN SEMANTICO --> WRITEINT PARENIZQ expresion PARENDER | WRITEINT error PUNTOYCOMA;
+//===============================================================================================
+sWriteInt     ::= WRITEINT PARENIZQ expresion:impresion PARENDER:control_linea
+					{:
+						if(!impresion.getTipoExpresion().equalsIgnoreCase("ENTERO")){
+							manejarError(25, control_linea.getLine());
+						}
+
+
+					//***************CODIGO INTERMEDIO**********************
+					IntermediateCodeBuilder fabrica_intermedio = new IntermediateCodeBuilder(scopeManager.getCurrentScope());
+					TemporalFactory fabrica_temporales = new TemporalFactory(scopeManager.getCurrentScope());
+					fabrica_intermedio.addQuadruples(impresion.getIntermediateCode());
+					fabrica_intermedio.addQuadruple("ESCRIBIR_ENTERO", impresion.getTemporal());
+					SWriteInt escribir_entero = new SWriteInt();
+					escribir_entero.setIntermediateCode(fabrica_intermedio.create());
+					RESULT = escribir_entero;
+					//*****************************************************
+					:}
+
+                | WRITEINT error PUNTOYCOMA
+                      ;
+//==================================================
+//PRODUCCION SIN SEMANTICO --> sWriteLn ::= WRITELN;
+//==================================================
+sWriteLn      ::= WRITELN
+                      ;
+
+// Tipos Basicos
+//==========================================================================================================
+// PRODUCCION SIN SEMANTICA: variables ::= IDENTIFICADOR | IDENTIFICADOR idArray | IDENTIFICADOR parFuncion;
+//==========================================================================================================
+variables     ::= IDENTIFICADOR:id
+					{:
+
+						Variables referencia_simple;
+						//SE INSTANCIA UN OBJETO DE TIPO VARIABLES Y SE HACE ALUSION A QUE ES UNA REFERENCIA SIMPLE Y SE ASIGNA SU IDENTIFICADOR ASOCIADO
+						referencia_simple = new Variables("REFERENCIA_SIMPLE");
+						referencia_simple.setIdentificador(id.getLexema());
+
+						//SE ASIGNA EL ATRIBUTO NUMERO DE LINEA AL OBJETO ANTERIORMENTE INSTANCIADO PARA PROPAGARLO HACIA ARRIBA Y CONTROLAR LINEA DE POSIBLES ERRORES
+						referencia_simple.setLineaError(id.getLine());
+
+ 						//SE COMPRUEBA QUE EXISTE EL IDENTIFICADOR REFERENCIADO, Y SE ASIGNA AL OBJETO REFERENCIA_SIMPLE EL NOMBRE DE TIPO PARA PROPAGARLO HACIA ARRIBA
+ 						if(scopeManager.containsSymbol(id.getLexema())){
+ 							SymbolIF simbolo_referenciado = scopeManager.searchSymbol(id.getLexema());
+ 							//HAY QUE COMPROBAR QUE EL SIMBOLO ES INSTANCIA DE **SymbolFunction** PARA QUE LA REFERENCIA NO SEA **TypeFunction** SINO EL TIPO DE RETORNO DE ESA FUNCION.
+ 							if(simbolo_referenciado instanceof SymbolFunction ){
+ 								referencia_simple.setTipoReferencia("REFERENCIA_FUNCION");
+ 								referencia_simple.setTipo(((SymbolFunction)simbolo_referenciado).getTipoRetorno());
+ 							}else{
+ 								referencia_simple.setTipo(simbolo_referenciado.getType().getName());
+ 							}
+ 							if(simbolo_referenciado instanceof SymbolConstant){
+ 								referencia_simple.setEsReferenciaConstante(true);
+ 								referencia_simple.setValorReferenciaConstante(((SymbolConstant)simbolo_referenciado).getValor());
+ 							}
+ 						}else{
+ 							manejarError(1, id.getLine());
+ 						}
+
+						///SE PROPAGA HACIA ARRIBA EL OBJETO Y SUS ATRIBUTOS
+				        RESULT = referencia_simple;
+					:}
+
+                | IDENTIFICADOR:id idArray:id_array
+                	{:
+                		if(scopeManager.containsSymbol(id.getLexema())){
+                			//OBTENEMOS EL NOMBRE DEL TIPO DE VECTOR AL QUE SE HACE REFERENCIA
+                			SymbolIF vector_referenciado = scopeManager.searchSymbol(id.getLexema());
+
+                			TypeIF tipo_simbolo = vector_referenciado.getType();
+                			// SE PARTE DE LA PREMISA DE QUE SI EL SIMBOLO EXISTE, SU TIPO TAMBIEN, DADO QUE NO SE PUEDE CREAR NINGUN SIMBOLO, SIN ANTES HABER INSERTADO EL TIPO
+                			//SE COMPRUEBA EL TIPO ES UNA INSTANCIA DE LA CLASE TypeArray
+                			if(tipo_simbolo instanceof TypeArray){
+                				Variables referencia_vector = new Variables("REFERENCIA_VECTOR");
+                				referencia_vector.setIdentificador(id.getLexema());
+                				TypeArray tipo_array = (TypeArray)tipo_simbolo;
+
+                				//SE COMPRUEBA INTEGRIDAD DE LIMITES EN CASO DE SER UN NUMERO ENTERO O UNA CONSTANTE NUMERICA
+                				if(id_array.tieneValorCalculableEnCompilacion()){
+                					int limite_inferior = tipo_array.getLimiteInferior();
+                					int limite_superior = tipo_array.getLimiteSuperior();
+                					int valor_referenciado = id_array.getValor();
+                					if(!(valor_referenciado >= limite_inferior) && !(valor_referenciado <= limite_superior)){
+ 										manejarError(7,id.getLine());
+                					}
+                				}//PONER ELSE SI ES NECESARIO CONTROLAR DE MANERA EXPLICITA CON CI QUE NO SE EXCEDEN LIMITES DE VECTOR
+                				//ALMACENAMOS EL TIPO PRIMITIVO DE LOS DATOS DEL VECTOR, DADO QUE ES LO QUE NOS INTERESA PARA PROPAGAR
+        						referencia_vector.setTipo(tipo_array.getTipoDatoVector());
+        						referencia_vector.setLineaError(id.getLine());
+        						//***************************************CODIGO INTERMEDIO*************************************************
+		                		IntermediateCodeBuilder fabrica_intermedio = new IntermediateCodeBuilder(scopeManager.getCurrentScope());
+		                		fabrica_intermedio.addQuadruples(id_array.getIntermediateCode());
+		                		TemporalFactory fabrica_temporales = new TemporalFactory(scopeManager.getCurrentScope());
+		                        TemporalIF temp_indiceVector = id_array.getTemporal();
+		                        TemporalIF temp_indiceVectorNormalizado = fabrica_temporales.create();
+		                        TemporalIF temp_DireccionBaseArray = fabrica_temporales.create();
+		                        TemporalIF temp_DesplazamientoRespectoBase = fabrica_temporales.create();
+        					    Variable variable_referenciada = new Variable(id.getLexema(), vector_referenciado.getScope());
+        					    Value index_inferior_vector = new Value(tipo_array.getLimiteInferior());
+        					    fabrica_intermedio.addQuadruple("SUB", temp_indiceVectorNormalizado,temp_indiceVector , index_inferior_vector);
+        					    fabrica_intermedio.addQuadruple("MVA", temp_DireccionBaseArray, variable_referenciada);
+        					    fabrica_intermedio.addQuadruple("SUB", temp_DesplazamientoRespectoBase, temp_DireccionBaseArray, temp_indiceVectorNormalizado );
+        					    referencia_vector.setTemporal(temp_DesplazamientoRespectoBase);
+        					    referencia_vector.setIntermediateCode(fabrica_intermedio.create());
+        						//**********************************************************************************************************
+        						RESULT = referencia_vector;
+                			}else{
+                				manejarError(30,id.getLine());
+                			}
+                		}else{
+                			manejarError(1,id.getLine());
+                		}
+        				:}
+
+                | IDENTIFICADOR:id parFuncion:parametros_llamada
+                      {:
+                        //SE CREA UN OBJETO DE TIPO **Variables** PARA GUARDAR EN EL LOS ATRIBUTOS OPORTUNOS Y PROPAGARLOS HACIA ARRIBA
+                		Variables referencia_funcion = new Variables("REFERENCIA_FUNCION");
+
+                		//SE ALMACENA EN EL OBJETO DE TIPO **Variables** EL IDENTIFICADOR  AL QUE HACE REFERENCIA
+                		referencia_funcion.setIdentificador(id.getLexema());
+
+                		//SE ALMACENA LA LINEA EN LA QUE SE ESTA HACIENDO REFERENCIA A LA FUNCION PARA FUTUROS CONTROLES
+                		referencia_funcion.setLineaError(id.getLine());
+
+                		//SE COMPRUEBA SI EXISTE EL SIMBOLO EN LOS AMBITOS ACTUALMENTE ABIERTOS
+                		if(scopeManager.containsSymbol(id.getLexema())){
+
+                			//EN CASO DE QUE EXISTA EL SIMBOLO SE COMPRUEBA QUE EL TIPO DE ESTE SIMBOLO SEA DE TIPO FUNCION DADO QUE EN UNA EXPRESION SE TRATA CON FUNCIONES EN ESTE CONTEXTO
+                			SymbolIF nuevo_simbolo = scopeManager.searchSymbol(id.getLexema());
+                		    if(nuevo_simbolo instanceof SymbolFunction){
+                		    	//SE HACE UN CASTING DE SIMBOLO GENERICO A SIMBOLO FUNCION
+                		    	SymbolFunction funcion_formal = (SymbolFunction)nuevo_simbolo;
+
+                		    	//SE HACE UN CASTING PARA PODER ACCEDER A LOS METODOS PROPIOS DE LA CLASE SYMBOLFUNCTION Y SE OBTIENE EL TIPO
+                		    	String tipo_retorno = funcion_formal.getTipoRetorno();
+
+                		    	//SE ALMACENA EN EL OBJETO DE TIPO **Variables** EL TIPO QUE DEVUELVE LA FUNCION PARA PROPAGARLO HACIA ARRIBA
+                		    	referencia_funcion.setTipo(tipo_retorno);
+
+                		    	// SE COMPRUEBAN QUE TANTO LOS PARAMETROS ACTUALES COMO LOS PARAMETROS FORMALES COINCIDEN EN NUMERO Y TIPO
+                		    	if(parametrosActuales_igual_parametrosFormales(parametros_llamada.getListaParametrosLlamada(), funcion_formal.getParametrosFormales())){
+                		    		//SE PROPAGA HACIA ARRIBA EL OBJETO DE TIPO **VARIABLES** CON TODOS SUS ATRIBUTOS BIEN INSTANCIADOS
+                		    	    RESULT = referencia_funcion;
+                		    	}else{
+                		    		manejarError(2,id.getLine());
+                		    	}
+                		    }else{
+                		    	manejarError(8, id.getLine());
+                		    }
+                		}else{
+                		    //SI NO SE ENCUENTRA NINGUN SIMBOLO ASOCIADO AL IDENTIFICADOR PROPORCIONADO EN LA REFERENCIA SE INFORMA DE ERROR Y SE INTERRUMPE SEMANTICO
+                			manejarError(1,id.getLine());
+                		}
+                	  :}
+                	  ;
+//====================================================================
+//PRODUCCION SIN SEMANTICA --> idArray ::= CORCHIZQ expresion CORCHDER;
+//====================================================================
+idArray       ::= CORCHIZQ:linea expresion:exp CORCHDER
+					{:
+						if(exp.esLogica()){
+							manejarError(6,linea.getLine());
+						}else{
+							IdArray referencia_vector = new IdArray();
+							//** FALTA PONER AQUI QUE EN CASO DE SER UN VALOR ENTERO SIMPLE LO MISMO
+							if(exp.esExpresionConstante() ){
+								referencia_vector.setValor(exp.getValorExpresionConstante());
+
+							}else if(exp.esUnNumeroSimple()){
+								referencia_vector.setValor(exp.getValorNumericoSimple());
+							}
+					//******************************CODIGO INTERMEDIO************************
+					    referencia_vector.setTemporal(exp.getTemporal());
+					    referencia_vector.setIntermediateCode(exp.getIntermediateCode());
+						RESULT = referencia_vector;
+					//**********************************************************************
+						}
+					:}
+					;
+//============================================================
+//PRODUCCION SIN SEMANTICO --> intOBool ::= INTEGER | BOOLEAN;
+//============================================================
+intOBool      ::= INTEGER:inte
+				{:
+					IntOBool tipoDato= new IntOBool();
+                	tipoDato.setTipo("ENTERO");
+					RESULT = tipoDato;
+				:}
+
+                | BOOLEAN:bool
+                {:
+                	IntOBool tipoDato= new IntOBool();
+                	tipoDato.setTipo("LOGICO");
+					RESULT = tipoDato;
+				:}
+                      ;
+//===============================================================
+//PRODUCCION SIN SEMANTICO --> entOid ::= ENTERO | IDENTIFICADOR;
+//===============================================================
+entOid        ::= ENTERO:valor_entero
+					{:
+					  EntOid entero = new EntOid();
+					  entero.set_esIdentificador(false);
+					  entero.setValor(valor_entero.getLexema());
+                      RESULT = entero;
+                     :}
+                | IDENTIFICADOR:valor_simbolico
+                    {:
+                      EntOid identificador = new EntOid();
+					  identificador.set_esIdentificador(true);
+					  identificador.setValor(valor_simbolico.getLexema());
+
+                      RESULT = identificador;
+                    :}
+                      ;
+
+// Constantes Booleanas.
+//=======================================================
+//PRODUCCION SIN SEMANTICA --> vBooleano ::= TRUE | FALSE;
+//========================================================
+//
+vBooleano     ::= TRUE
+				{:
+					VBooleano valor_logico = new VBooleano("TRUE");
+					RESULT = valor_logico;
+				:}
+
+                | FALSE
+                {:
+                	VBooleano valor_logico = new VBooleano("FALSE");
+                	RESULT = valor_logico;
+                :}
+                      ;
+error ::= {: System.out.println("REVISE LA ESTRUCTURA SINTACTICA DEL PROGRAMA");
+			semanticErrorManager.semanticFatalError();:};

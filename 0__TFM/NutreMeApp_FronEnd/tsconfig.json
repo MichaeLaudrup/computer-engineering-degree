@@ -1,0 +1,46 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "paths": {
+      "@core/services": ["src/app/core/services"],
+      "@shared/constants": ["src/app/shared/consts"],
+      "@shared/enums": ["src/app/shared/enums"], 
+      "@shared/generic-components": ["src/app/shared/components/generic-components"],
+      "@shared/data": ["src/app/shared/global-data"],
+      "@shared/models": [ "src/app/shared/models" ],
+      "@shared/routing-components": [ "src/app/shared/routing-components"],
+      "@ngrx/ngrx-diet": ["src/app/ngrx-store-modules/ngrx-diet"],
+      "@ngrx/ngrx-meals": ["src/app/ngrx-store-modules/ngrx-meals"],
+      "@ngrx/ngrx-section-meals": ["src/app/ngrx-store-modules/ngrx-meals-sections"],
+      "@ngrx/ngrx-shared": ["src/app/ngrx-store-modules/ngrx-shared"],
+      "@ngrx/ngrx-user": ["src/app/ngrx-store-modules/ngrx-user"],
+    },
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": false,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2017",
+    "module": "es2020",
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}

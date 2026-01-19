@@ -1,0 +1,64 @@
+
+<form class="form" [formGroup]="fisiologicForm" (ngSubmit)="processData()">
+    <h2>Datos fisiológicos</h2>
+    <div class="form__row">
+        <slider-input
+            [minValue]="100"
+            [maxValue]="220"
+            textLabel="Altura"
+            controlName="height"
+            [form-group]="fisiologicForm"
+            [stepPrecision]="1"
+            units="cm"
+            >
+        </slider-input>
+    </div>
+
+    <div class="form__row">
+        <slider-input
+            [minValue]="30"
+            [maxValue]="150"
+            textLabel="Peso"
+            controlName="weight"
+            [form-group]="fisiologicForm"
+            [stepPrecision]="1"
+            units="kg"
+            >
+        </slider-input>
+    </div>
+
+    <div class="form__row">
+        <slider-input
+            [minValue]="18"
+            [maxValue]="110"
+            textLabel="Edad"
+            controlName="age"
+            [form-group]="fisiologicForm"
+            [stepPrecision]="1"
+            units="años"
+            >
+        </slider-input>
+        
+    </div>
+
+    <div class="form__row">
+        <label class="selector-label" for="gemero">Genero</label>
+        <select name="genero" id="genero" formControlName="gender">
+            <option value="Hombre" name="genero">Hombre</option>
+            <option value="Mujer" name="genero">Mujer</option>
+        </select>
+    </div>
+
+    <div class="form__row">
+        <label for="actividad" class="selector-label">Actividad</label>
+        <select id="actividad" size="1" name="actividad" formControlName="activityIntesity"> 
+            <option selected="true" value="1.2">Sedentario</option> 
+            <option value="1.375">Actividad ligera</option> 
+            <option value="1.55">Actividad moderada</option> 
+            <option value="1.725">Actividad intensa</option> 
+            <option value="1.9">Actividad muy intensa</option> 
+            </select>
+    </div> 
+
+</form>
+<button class="btn" type="submit" (click)="processData()">Hecho</button>

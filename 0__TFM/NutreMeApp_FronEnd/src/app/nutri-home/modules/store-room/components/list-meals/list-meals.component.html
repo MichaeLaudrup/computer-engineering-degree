@@ -1,0 +1,106 @@
+
+
+<div class="list-meals__component">
+    <ul class="list-meals__list" >
+        <ng-container *ngFor="let aliment of aliments; let i = index">
+            <li 
+                class="list-item"
+                [ngClass]="{'item-list-expanded': activeListItem === i || showExpanded}" 
+                (click)="conmuteListItemStatus( i)"
+                [@list-item-animation]="(activeListItem === i) ? 'to-expanded': 'no-status'"
+                (click)="clickInside =true"
+                #listItemTriggered
+                >
+                <div 
+                    class="list-item__img"
+                    [style]="'background-image: url(' + ((!aliment.srcImg.startsWith('assets')) ? (foodImagesURL +aliment.srcImg + '.jpg') : aliment.srcImg) +')'">
+                    <div class="list-item-actions" *ngIf="activeListItem === i || showExpanded">
+                        <h2 class="list-item__name">
+                            {{ aliment.name }} 
+                        </h2>
+                        <div class="icons">
+                            <span class="icon material-icons-outlined" (click)="activeEditMode(i)">edit</span>
+                            <span class="icon material-icons-outlined" (click)="activeDeleteMode()">delete</span>
+                        </div>
+                    </div>
+
+                    <div class="list-item__tags" *ngIf="activeListItem === i || showExpanded">
+                        <ng-container *ngFor="let mealTag of aliment.tags">
+                            <span class="list-item__tag" >
+                                <span> {{ mealTag | fromTagToText}}</span>
+                                <dinamic-svg-icon [svg-name]="mealTag | fromTagToSvgIcon" svg-width="20px" svg-height="20px"></dinamic-svg-icon>
+                            </span>
+                            
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="list-item__content">
+
+                    <section class="meal-section" *ngIf="false">
+                        <h3 class="section-title">Descripción</h3>
+                        <p class="description">{{ aliment.description}}</p>
+                    </section>
+                    <span class="list-item__name" *ngIf="activeListItem !== i  && !showExpanded ">
+                        {{ aliment.name }}
+                    </span>
+                    <div class="list-properties">
+                        <div class="list-property">
+                            <div class="list-property__icon">
+                                <span class="material-icons-outlined energy">electric_bolt</span>
+                            </div>
+                            <span class="list-property__value">
+                                {{ aliment.kcal }}
+                            </span>
+                            <span class="list-property__units">
+                                Kcal
+                            </span>
+                        </div>
+
+                        <div class="list-property">
+                            <div class="list-property__icon">
+                                <span class="material-icons-outlined scale">scale</span>
+                            </div>
+                            <span class="list-property__value">
+                                {{ aliment.weight }}
+                            </span>
+                            <span class="list-property__units">
+                                gr
+                            </span>
+                        </div>
+                    </div>
+                    <section class="meal-section">
+                        <h3 class="section-title" *ngIf="activeListItem === i || showExpanded ">Macronutrientes</h3>
+                        <div class="macronutriens" *ngIf="activeListItem === i || showExpanded">
+                           <radial-chart [value]="aliment.carboHydrates" [limit]="60" label="Hidratos" firstColor="var(--c5)" secondColor="var(--c7)"></radial-chart>
+                           <radial-chart [value]="aliment.proteins" [limit]="60"label="Proteinas"></radial-chart>
+                           <radial-chart [value]="aliment.fats" [limit]="60" label="Grasas" firstColor="var(--c6)" secondColor="var(--c10)"></radial-chart>
+                        </div>
+                    </section>
+
+
+                    <!-- <div class="list-item__macronutriens">
+                        <span class="list-item__macronutrient">
+                            <span class="material-icons-outlined">electric_bolt</span>
+                                {{ aliment.proteins }} kcal
+                            </span>
+                        <span class="list-item__macronutrient">
+                            <dinamic-svg-icon svg-width="20px" svg-height="20px" svg-name="protein" ></dinamic-svg-icon>
+                            <span>
+                                {{ aliment.proteins }} g
+                            </span>
+                        </span>
+                        <span class="list-item__macronutrient">
+                            <dinamic-svg-icon svg-name="carbohydrates"></dinamic-svg-icon>
+                                {{ aliment.carboHydrates }} g
+                            </span>
+                        
+                        <span class="list-item__macronutrient">
+                            <dinamic-svg-icon svg-name="fats" ></dinamic-svg-icon>
+                            {{ aliment.fats }} g
+                        </span>
+                    </div>  -->
+                </div>
+            </li>
+        </ng-container>
+    </ul>
+</div>

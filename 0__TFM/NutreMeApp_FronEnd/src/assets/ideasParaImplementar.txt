@@ -1,0 +1,2 @@
+--Poner enlaces a la OMS cuando se indica si tiene sobre peso o no
+--Poner aclaracion en el IMC de que si es de musculo no se consideraria obesidad. 

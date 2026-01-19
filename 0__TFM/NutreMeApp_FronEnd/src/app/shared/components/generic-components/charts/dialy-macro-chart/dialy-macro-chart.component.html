@@ -1,0 +1,14 @@
+
+
+<div class="daily-macro-chart__container">
+    <h3 class="date-title">{{ dailyMealsRegister.date | date}}</h3>
+    <div class="radial-chart">
+        <radial-chart [value]="dailyMealsRegister.totalKcal" [limit]="totalKcal" [label]="'Calorías restantes'" [units]="' de ' + (totalKcal | number:'1.0-0')+ ' Kcal'"></radial-chart>
+    </div>
+    <div class="macro-data">
+        <progress-bar label="Hidratos" [progressValue]="dailyMealsRegister.totalMacro.carbohydrates" [maxValue]="macroNutrientsLimits.carbohydrates" [withLabel]="true" [units]="'de ' + macroNutrientsLimits.carbohydrates+' gr'"></progress-bar>
+        <progress-bar [progressValue]="dailyMealsRegister.totalMacro.proteins" [maxValue]="macroNutrientsLimits.proteins" [withLabel]="true" [units]="'de ' + macroNutrientsLimits.proteins+' gr'"></progress-bar>
+        <progress-bar label="Grasas"[progressValue]="dailyMealsRegister.totalMacro.fats" [maxValue]="macroNutrientsLimits.fats" [withLabel]="true" [units]="'de ' + macroNutrientsLimits.fats+' gr'"></progress-bar>
+    </div>
+</div>
+

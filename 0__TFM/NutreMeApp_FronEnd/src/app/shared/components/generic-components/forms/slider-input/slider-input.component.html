@@ -1,0 +1,33 @@
+
+<div class="container" [formGroup]="formGroupFromParent">
+    <div class="label-value">
+        <label class="label" for="slider-input">
+            {{ textLabel}}
+        </label>
+        <div class="value-box" (click)="inputMood(true)" (mouseout)="inputMood(false)">
+            <input 
+                class="input-value"
+                [value]="formGroupFromParent.value[controlName]"
+                [formControlName]="controlName"/>
+            <span class="units">
+                {{units}}
+            </span>
+        </div>
+    </div>
+
+    <div class="range-slider">
+        <input id="slider-input"
+         class="slider" 
+         type="range"
+         [value]="formGroupFromParent.value[controlName]"
+         [min]="minValue" 
+         [max]="maxValue" #input
+         (input)="actualValue = +input.value"
+         (change)="actualValue = +input.value"
+         [formControlName]="controlName"
+         [step]="stepPrecision">
+        <!-- <div class="slider-thumb" [style.left]="(actualValue / maxValue) *100 +'%'">
+        </div> -->
+        <div class="progress" [style.width]="((formGroupFromParent.value[controlName] - minValue) / (maxValue - minValue)) *100 +'%'"></div>
+    </div>
+</div>

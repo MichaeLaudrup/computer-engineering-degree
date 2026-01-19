@@ -1,0 +1,21 @@
+
+<div class="modal-container">
+    <div class="modal-component">
+        <div class="modal__content">
+            
+        </div>
+
+        <div class="modal__links">
+            <ul class="modal__links-list">
+                <li class="modal__links-item" *ngFor="let link of []">
+                    <span class="material-icons-outlined">
+                        mouse
+                    </span>
+                    <a class="modal__links-link" [href]="link.url">{{ link.title}}</a>
+                </li>
+            </ul>
+        </div>
+     
+    </div>  
+</div>
+

@@ -1,0 +1,9 @@
+<div class="gauge">
+    <div class="gauge__body">
+        <div class="gauge__fill" [style.transform]="rotation">
+        </div>
+        <div class="gauge__cover">
+            {{ imc | number:'1.2-2'}}
+        </div>
+    </div>
+</div>

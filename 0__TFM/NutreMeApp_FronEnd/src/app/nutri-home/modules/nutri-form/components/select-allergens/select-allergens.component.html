@@ -1,0 +1,13 @@
+<h2>¿Tienes alguna alergia o intolerancia? </h2>
+<div class="allergens-box">
+    <ng-container *ngFor="let alergen of allergens; let i = index">
+        <div 
+            class="allergens-box-item"
+            (click)="toggleSelectedAlergen(alergen)"
+            [ngClass]="{'selected': selectedAllergens.includes(alergen)}">
+            <dinamic-svg-icon [svg-name]="alergen | fromAlergenToSvgIcon" svg-width="30px" svg-height="30px"></dinamic-svg-icon>
+            {{ allergensNames[i]}}
+        </div>
+    </ng-container>
+</div>
+<button class="btn" (click)="nextPage()">Hecho</button>
